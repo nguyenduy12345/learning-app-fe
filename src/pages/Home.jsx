@@ -464,7 +464,7 @@ const Home = () => {
             Duylingo
           </p>
           <div className="button cursor-pointer rounded-xl border-[1px] border-b-[3px] border-white px-4 py-2 hover:border-black hover:bg-white hover:text-black active:scale-95">
-            <a href="http://localhost:5173/learning">Bắt đầu ngay </a>
+            <a href="/learning">Bắt đầu ngay </a>
             <span>
               <i className="fa-duotone fa-solid fa-play"></i>
             </span>
