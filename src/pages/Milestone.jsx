@@ -25,9 +25,7 @@ const Milestone = () => {
   const [gems, setGems] = useState(0);
   const [experiences, setExperiences] = useState(0);
   const [currentSection, setCurrentSection] = useState();
-  const dayStreakDiv = useRef();
   const navigate = useNavigate();
-
   //Get current section
   useEffect(() => {
     const getSection = async () => {
@@ -73,15 +71,15 @@ const Milestone = () => {
   useEffect(() => {
     const fetchMilestone = async () => {
       try {
-        const indexCourse = courseOfLearningProcess?.findIndex(
-          (course) => course.courseId._id.toString() === courseId.toString(),
-        );
-        const indexSection = courseOfLearningProcess[
-          indexCourse
-        ]?.sections?.findIndex(
-          (section) => section.sectionId.toString() === sectionId.toString(),
-        );
-        if(indexSection > -1) return
+        // const indexCourse = courseOfLearningProcess?.findIndex(
+        //   (course) => course.courseId._id.toString() === courseId.toString(),
+        // );
+        // const indexSection = courseOfLearningProcess[
+        //   indexCourse
+        // ]?.sections?.findIndex(
+        //   (section) => section.sectionId.toString() === sectionId.toString(),
+        // );
+        // if(indexSection > -1) return
         if(milestones.length === 0) return
         await instance.patch(`learning_process/update_section`,{
           courseId,
@@ -337,8 +335,8 @@ const Milestone = () => {
                         />
                       ) : item.status === 2 ? (
                         <CircleProgress
-                          currentLesson={item.currentLesson}
-                          lessonLength={lessons?.length}
+                          currentLesson={item.currentLesson + 1}
+                          lessonLength={item.currentLesson}
                         />
                       ) : (
                         ""

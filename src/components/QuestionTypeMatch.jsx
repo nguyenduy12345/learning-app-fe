@@ -17,6 +17,7 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion }) => {
   const [listWord, setListWord] = useState([]);
   const [listPaire, setListPaire] = useState([]);
   const [isLeftColChoose, setIsLeftColChoose] = useState(0);
+  console.log(listPaire)
   // covert list paire arr to obj
   useEffect(() => {
     const obj = [];
