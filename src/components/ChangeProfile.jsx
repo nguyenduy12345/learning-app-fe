@@ -23,6 +23,10 @@ const ChangeProfile = ({ setIsEditProfile }) => {
       setMessage('Vui lòng nhập tên của bạn')
       return
     }
+    if(fullName.length > 30){
+      setMessage('Không nhập tên dài quá 30 ký tự')
+      return
+    }
     if(isSending) return
     setIsSending(true)
     await instance.patch("users/update_information",{

@@ -457,7 +457,7 @@ const Home = () => {
     return () => ScrollTrigger.killAll();
   }, []);
   return (
-    <>
+    <div className="scrollbar-none overflow-hidden">
       <div className="header fixed z-20 flex h-[4rem] w-full items-center justify-center border-b-[1px] border-b-[#41646b] text-white scrollbar-none">
         <div className="mx-auto flex w-[80%] items-center justify-between">
           <p className="cursor-pointer font-lato text-xl font-bold uppercase tracking-widest">
@@ -582,7 +582,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="experience-container h-[100vh] w-[100vw] bg-gradient-to-l from-black via-gray-800 to-black font-quicksand text-white transition">
+      <div className="experience-container h-[100vh] w-[100vw] bg-gradient-to-l from-black via-gray-800 to-black font-quicksand text-white transition scrollbar-none">
         <div className="experience relative h-full w-full">
           <h4 className="title experience-title absolute top-[10%] w-full text-center text-[1.8rem] font-bold tracking-[0.2rem]">
             Lợi ích khi học ngoại ngữ qua trò chơi
@@ -786,7 +786,7 @@ const Home = () => {
           <p>&copy; 2024 Duylingo. All rights reserved.</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 

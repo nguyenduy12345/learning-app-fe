@@ -7,6 +7,8 @@ const UserInfoProvide = ({ children }) => {
   const [profile, setProfile] = useState()
   const [fetchProfile, setFetchProfile] = useState([]);
   const [courseOfLearningProcess, setCourseOfLearningProcess] = useState([])
+  const [missons, setMissons] = useState([])
+  const [fetchMisson, setFetchMisson] = useState()
   const [fetchCourseOfLearningProcess, setFetchCourseOfLearningProcess] = useState([])
   const [lessonsOfSummaryLesson, setLessonOfSummaryLesson] = useState([])
   const [fetchLessonsOfSummaryLesson, setFetchLessonsOfSummaryLesson] = useState([])
@@ -40,8 +42,18 @@ const UserInfoProvide = ({ children }) => {
     }
     getListLesson()
   }, [fetchLessonsOfSummaryLesson])
+  useEffect(() =>{
+    const getMissons = async() =>{
+        await instance.get('/user_missons')
+        .then((res) => {
+          setMissons(res.data.data.missons)
+        })
+        .catch(err => err)
+    }
+    getMissons()
+  }, [])
   return (
-    <UserInfo.Provider value={{ profile, setProfile, setFetchProfile, courseOfLearningProcess, setFetchCourseOfLearningProcess, lessonsOfSummaryLesson, setFetchLessonsOfSummaryLesson}}>
+    <UserInfo.Provider value={{ profile, setProfile, setFetchProfile, courseOfLearningProcess, missons, setFetchCourseOfLearningProcess, lessonsOfSummaryLesson, setFetchLessonsOfSummaryLesson}}>
       {children}
     </UserInfo.Provider>
   );
