@@ -38,7 +38,7 @@ const Header = () => {
       })
   },[courseOfLearningProcess]);
   return (
-    <div className="font-noto z-30 fixed w-full top-0 md:w-[90vw] md:left-[5.7rem] lg:left-[17rem] justify-center bg-white py-3 border-b-[1px] border-[#e5e5e5]">
+    <div className="font-noto z-30 fixed w-full top-0 left-0 right-0 md:w-[90vw] md:left-[5.7rem] lg:left-[17rem] justify-center bg-white py-3 border-b-[1px] border-[#e5e5e5]">
       <ul className="flex flex-wrap gap-2 w-full justify-evenly text-end md:w-[80%] md:justify-evenly">
         <li className="flex items-center justify-center">
           <Listbox value={selected || []} onChange={setSelected}>

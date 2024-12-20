@@ -3,7 +3,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { UserInfo } from "../stores/user.store.jsx";
 import instance from "../utils/axiosRequest.js";
 
-const QuestionTypeFill = ({ question, lessonId, handleNextQuestion }) => {
+const QuestionTypeFill = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
   const {
     setProfile,
     lessonsOfSummaryLesson,
@@ -78,10 +78,12 @@ const QuestionTypeFill = ({ question, lessonId, handleNextQuestion }) => {
         answer: listWordDrop,
       });
       if (result.data.data.correct) {
+        setQuestionsCorrect(prev => prev + 1)
         setCorrect(true);
         setCountRequest(0);
         return;
       } else {
+        setQuestionsCorrect(0)
         setCorrect(false);
         await instance.patch("users/update_asset", {
           hearts: Math.random(),
@@ -213,7 +215,7 @@ const QuestionTypeFill = ({ question, lessonId, handleNextQuestion }) => {
                 ) : (
                   <button
                     onClick={handleReplayQuestion}
-                    className="borer-[#e5e5e5] flex transform items-center justify-center rounded-xl border-[3px] border-b-[5px] bg-white px-6 py-2 font-noto font-medium text-[#afafaf] transition-all duration-300 hover:scale-105 active:scale-95 md:px-10 md:py-3 md:text-xl md:font-bold"
+                    className="border-[#e5e5e5] flex transform items-center justify-center rounded-xl border-[3px] border-b-[5px] bg-white px-6 py-2 font-noto font-medium text-[#afafaf] transition-all duration-300 hover:scale-105 active:scale-95 md:px-10 md:py-3 md:text-xl md:font-bold"
                   >
                     Làm lại
                   </button>

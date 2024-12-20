@@ -53,7 +53,7 @@ const UserInfoProvide = ({ children }) => {
     getMissons()
   }, [])
   return (
-    <UserInfo.Provider value={{ profile, setProfile, setFetchProfile, courseOfLearningProcess, missons, setFetchCourseOfLearningProcess, lessonsOfSummaryLesson, setFetchLessonsOfSummaryLesson}}>
+    <UserInfo.Provider value={{ profile, setProfile, setFetchProfile, courseOfLearningProcess, missons, setMissons, setFetchCourseOfLearningProcess, lessonsOfSummaryLesson, setFetchLessonsOfSummaryLesson}}>
       {children}
     </UserInfo.Provider>
   );

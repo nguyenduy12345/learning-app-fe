@@ -34,13 +34,13 @@ const SideBar = () => {
             Xem thêm
           </Link>
         </div>
-        <ul className="text-md mt-2 flex max-h-[14rem] flex-col gap-3 overflow-hidden rounded-2xl">
+        <ul className="text-md mt-2 flex md:max-h-[9rem] lg:max-h-[14rem] flex-col gap-3 overflow-hidden rounded-2xl">
           {missons.length !== 0 &&
             missons.map((misson, index) => (
               misson.completed === false && (
                 <li key={index} className="mt-2 flex w-full px-4">
                 <ul className="flex-grow items-start">
-                  <li className="text-md text-black">
+                  <li className="text-xs lg:text-md text-black">
                     {misson.missonId.misson}
                   </li>
                   <li className="relative mt-2 h-6 w-full rounded-xl bg-[#e5e5e5]">

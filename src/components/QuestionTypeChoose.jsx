@@ -4,7 +4,7 @@ import { UserInfo } from "../stores/user.store.jsx";
 
 import instance from "../utils/axiosRequest.js";
 
-const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion }) => {
+const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
   const {
     setProfile,
     lessonsOfSummaryLesson,
@@ -67,9 +67,11 @@ const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion }) => {
       const result = await instance.post(`questions/${question._id}`, {answer: choose - 1} )
       if (result.data.data.correct) {
         setCountRequest(0);
+        setQuestionsCorrect(prev => prev + 1)
         setCorrect(true);
         return;
       } else {
+        setQuestionsCorrect(0)
         setCorrect(false);
         await instance.patch("users/update_asset", {
           hearts: Math.random(),

@@ -11,7 +11,7 @@ const NavBar = () => {
   };
   return (
     <>
-      <ul className="fixed bottom-0 z-20 flex h-[3.8rem] w-full justify-evenly border-t-2 border-[#e5e5e5] bg-[#f3f8f9] py-[3px] text-[#777777] md:fixed md:top-0 md:h-screen md:w-auto md:flex-col md:justify-start md:gap-2 md:border-r-[3px] md:border-t-0 md:border-r-[#eeeeee] md:bg-white md:pt-[4rem] lg:w-[17rem] lg:pt-[1rem] lg:px-6">
+      <ul className="fixed bottom-0 z-20 flex h-[3.8rem] w-full justify-evenly border-t-2 border-[#e5e5e5] bg-[#f3f8f9] py-[3px] text-[#777777] md:fixed md:top-0 md:left-0 md:h-screen md:w-auto md:flex-col md:justify-start md:gap-2 md:border-r-[3px] md:border-t-0 md:border-r-[#eeeeee] md:bg-white md:pt-[4rem] lg:w-[17rem] lg:pt-[1rem] lg:px-6">
         <a
           href="http://localhost:5173"
           title="Trang chủ"
@@ -81,7 +81,7 @@ const NavBar = () => {
             className={({ isActive }) =>
               isActive
                 ? "hidden rounded-lg border-[1px] border-blue-300 p-1 text-blue-400 md:flex md:bg-[#ddf4ff] lg:p-0"
-                : "hidden md:flex"
+                : "hidden md:flex md:justify-center"
             }
             to="/alphabet"
           >
@@ -101,7 +101,7 @@ const NavBar = () => {
           className={({ isActive }) =>
             isActive
               ? "hidden rounded-lg border-[1px] border-blue-300 p-1 text-blue-400 md:flex md:bg-[#ddf4ff] lg:p-0"
-              : "hidden md:flex"
+              : "hidden md:flex justify-center"
           }
           to="/missons"
         >
@@ -173,7 +173,7 @@ const NavBar = () => {
           <img src="/images/logo/three-dots.png" className="w-8 md:w-10 lazyload" />
         </li>
         {smallNav && (
-          <ul className="absolute bottom-[3.7rem] right-[0.7rem] z-20 flex h-[11rem] translate-x-0 flex-col justify-between rounded-lg border-2 border-[#e5e5e5] bg-white px-[8px] py-2 duration-1000 ease-linear md:hidden">
+          <ul className="absolute bottom-[3.7rem] right-[0.7rem] z-20 flex h-[11rem] translate-x-0 flex-col justify-around rounded-lg border-2 border-[#e5e5e5] bg-white px-[8px] py-2 duration-1000 ease-linear md:hidden">
             <li className="flex items-center justify-center">
               {courseOfLearningProcess.length !== 0 &&
               courseOfLearningProcess[0].courseId.typeWritingSystem ===

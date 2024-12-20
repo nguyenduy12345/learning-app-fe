@@ -62,7 +62,7 @@ import ChangeProfile from "../components/ChangeProfile.jsx";
   return (
     <MainLayout>
       {!!profile && (
-        <div className="absolute mt-[5rem] md:left-[5.5rem] md:w-[75vw] lg:left-[17rem] lg:w-[69vw] w-full rounded-lg bg-white pb-4 shadow-lg">
+        <div className="absolute mt-[5rem] pb-[5rem] md:left-[5.5rem] md:w-[75vw] lg:left-[17rem] lg:w-[69vw] w-full rounded-lg bg-white shadow-lg">
           <div className="relative w-full flex justify-center">
             <img
               src={
@@ -156,10 +156,10 @@ import ChangeProfile from "../components/ChangeProfile.jsx";
             </p>
           </div>
           <div className="mt-6 mx-2 flex flex-col justify-center md:flex-row">
-            <div onClick={() => setIsEditProfile(!isEditProfile)} className="transform cursor-pointer rounded-lg bg-gradient-to-r from-pink-400 to-blue-600 px-6 py-3 font-noto text-lg text-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
+            <div onClick={() => setIsEditProfile(!isEditProfile)} className="transform cursor-pointer rounded-lg bg-gradient-to-r from-pink-400 to-blue-600 px-6 py-3 font-noto text-lg text-white shadow-lg transition-transform duration-300  hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
               Chỉnh sửa thông tin
             </div>
-            <div onClick={() => setIsEditPassword(!isEditPassword)} className="mt-2 transform cursor-pointer rounded-lg bg-gradient-to-r from-pink-400 to-blue-600 px-6 py-3 font-noto text-lg text-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95 md:ml-2 md:mt-0">
+            <div onClick={() => setIsEditPassword(!isEditPassword)} className="mt-2 transform cursor-pointer rounded-lg bg-gradient-to-r from-pink-400 to-blue-600 px-6 py-3 font-noto text-lg text-white shadow-lg transition-transform duration-300  hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95 md:ml-2 md:mt-0">
               Thay đổi mật khẩu
             </div>
           </div>

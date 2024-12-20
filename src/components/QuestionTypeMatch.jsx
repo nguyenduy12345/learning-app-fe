@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import { UserInfo } from "../stores/user.store.jsx";
 
 import instance from "../utils/axiosRequest.js";
-const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion }) => {
+const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
   const {
     setProfile,
     lessonsOfSummaryLesson,
@@ -17,7 +17,6 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion }) => {
   const [listWord, setListWord] = useState([]);
   const [listPaire, setListPaire] = useState([]);
   const [isLeftColChoose, setIsLeftColChoose] = useState(0);
-  console.log(listPaire)
   // covert list paire arr to obj
   useEffect(() => {
     const obj = [];
@@ -82,10 +81,12 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion }) => {
       const result = await instance.post(`questions/${question._id}`, {answer: listPaire} )
       if (result.data.data.correct) {
         setCorrect(true);
+        setQuestionsCorrect(prev => prev + 1)
         setCountRequest(0);
         return;
       } else {
         setCorrect(false);
+        setQuestionsCorrect(0)
         await instance.patch("users/update_asset", {
           hearts: Math.random(),
         });

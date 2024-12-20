@@ -71,15 +71,6 @@ const Milestone = () => {
   useEffect(() => {
     const fetchMilestone = async () => {
       try {
-        // const indexCourse = courseOfLearningProcess?.findIndex(
-        //   (course) => course.courseId._id.toString() === courseId.toString(),
-        // );
-        // const indexSection = courseOfLearningProcess[
-        //   indexCourse
-        // ]?.sections?.findIndex(
-        //   (section) => section.sectionId.toString() === sectionId.toString(),
-        // );
-        // if(indexSection > -1) return
         if(milestones.length === 0) return
         await instance.patch(`learning_process/update_section`,{
           courseId,
@@ -284,7 +275,8 @@ const Milestone = () => {
         />
       ) : (
         <MainLayout>
-          <div className="absolute top-[5rem] lg:top-[5.7rem] m-[0.5rem] w-full font-noto scrollbar-none md:left-[5.5rem] md:w-[49vw] lg:left-[17rem] lg:w-[39vw] xl:w-[50vw] 2xl:w-[52vw]">
+          <div className="relative pb-[5rem]">
+          <div className="absolute pb-[5rem] top-[5rem] lg:top-[5.7rem] m-[0.5rem] w-full font-noto scrollbar-none md:left-[5.5rem] md:w-[49vw] lg:left-[17rem] lg:w-[39vw] xl:w-[50vw] 2xl:w-[52vw]">
             <div className="fixed top-[3.8rem] z-10 h-[5rem] w-full bg-white"></div>
             <div
               className={`fixed top-[4.7rem] z-10 flex h-[5.5rem] lg:h-[6.5rem] w-[96.5%] gap-[5px] rounded-2xl border-b-4 border-b-[#546b44] md:border-none bg-[#58cc02] pl-4 md:top-[6rem] md:left-[6rem] md:w-[46vw] lg:left-[18rem] lg:w-[38vw] xl:w-[46vw] 2xl:w-[49.5vw]`}
@@ -310,7 +302,7 @@ const Milestone = () => {
                 <p className="hidden xl:block text-xl font-medium ml-2">Hướng dẫn</p>
               </div>
             </div>
-            <div className="absolute top-[4rem] mx-auto flex w-[98%] min-h-[100vh] flex-col gap-20 overflow-x-hidden scrollbar-none rounded-2xl md:top-[6rem] lg:gap-24">
+            <div className="absolute top-[4rem] pb-[10rem] mx-auto flex w-[98%] min-h-[100vh] flex-col gap-20 overflow-x-hidden scrollbar-none rounded-2xl md:top-[6rem] lg:gap-24">
               {milestones &&
                 milestones.map((item, index) => (
                   <ul
@@ -318,7 +310,7 @@ const Milestone = () => {
                     onClick={() =>
                       handleShowInfoMilestone(item, index, item._id)
                     }
-                    className={`relative mt-12 flex ${index % 2 ? "left-[66%]" : "left-[15%] sm:left-[20%]"} shadow-2xl`}
+                    className={`relative mt-12 flex ${index % 2 ? "left-[66%]" : "left-[15%] sm:left-[20%]"} shadow-2xl scrollbar-none`}
                   >
                     <li
                       className={`absolute top-[0.4rem] z-0 h-[5.5rem] w-[5.5rem] rounded-full ${index === 0 ? "bg-[#46a302]" : milestones[index - 1]?.status === 2 ? "bg-[#46a302]" : item.status === 0 ? "bg-[#b7b7b7]" : ""} md:top-[0.4rem]`}
@@ -421,6 +413,7 @@ const Milestone = () => {
                   </ul>
                 ))}
             </div>
+          </div>
           </div>
           <SideBar />
         </MainLayout>

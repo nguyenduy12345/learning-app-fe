@@ -4,7 +4,7 @@ import { UserInfo } from "../stores/user.store.jsx";
 
 import instance from "../utils/axiosRequest.js";
 
-const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion }) => {
+const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
   const {
     setProfile,
     lessonsOfSummaryLesson,
@@ -58,9 +58,11 @@ const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion }) => {
       )
       if (result.data.data.correct) {
         setCountRequest(0);
+        setQuestionsCorrect(prev => prev + 1)
         setCorrect(true);
         return;
       } else {
+        setQuestionsCorrect(0)
         setCorrect(false);
         await instance.patch("users/update_asset", {
           hearts: Math.random(),
