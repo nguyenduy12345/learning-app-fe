@@ -55,8 +55,6 @@ const ShowStatusMissons = ({
     }
     addAssetUser()
   }, [listMisson]);
-  console.log(listMisson)
-  console.log(missonCompleted)
   return (
     isShowInfoMisson &&
     listMisson &&
@@ -66,11 +64,11 @@ const ShowStatusMissons = ({
           <div className="flex w-full items-center justify-center">
             <div className="ml-2 w-[90%] rounded-xl bg-white p-4 font-noto md:w-[70%]">
               <p className="md:text-md text-center text-xs font-semibold uppercase lg:text-lg">
-                Trạng thái hiện tại của các nhiệm vụ
+                Tiến trình hiện tại của các nhiệm vụ
               </p>
               {/* Danh sách nhiệm vụ */}
               <ul className="mt-4 max-h-[70vh] space-y-3 overflow-scroll scrollbar-none">
-                {missonCompleted?.map((misson, index) => (
+                {missonCompleted && missonCompleted.map((misson, index) => (
                   <li
                     key={index}
                     className={`w-full ${misson.completed ? "bg-[#ebf9e4] text-black" : ""} rounded-xl border-[1px] border-[#e5e5e5] p-4`}
@@ -99,7 +97,7 @@ const ShowStatusMissons = ({
                           className="lazyload h-9 w-9"
                         />
                         {misson.completed && (
-                          <i className="fa-solid fa-check absolute right-[-0.3rem] top-[0.8rem] hidden text-[3rem] font-bold text-white md:flex"></i>
+                          <i className="fa-solid fa-check absolute right-[-0.7rem] top-[0.5rem] hidden text-[3.5rem] font-bold text-[#774e2f] md:flex"></i>
                         )}
                       </div>
                     </div>

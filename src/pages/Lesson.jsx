@@ -43,7 +43,7 @@ const Lesson = ({
   const [isCongratulation, setIsCongratulation] = useState(false);
   const [listMisson, setListMisson] = useState([]);
   const [isShowInfoMisson, setIsShowInfoMisson] = useState(false);
-  const [questionsCorrect, setQuestionsCorrect] = useState(7);
+  const [questionsCorrect, setQuestionsCorrect] = useState(0);
   useEffect(() => {
     if (lessons.length === 0) {
       setIsLesson(false);
@@ -86,7 +86,6 @@ const Lesson = ({
 
   // create variable save listMisson send to components ShowStatusMissons
   let listMissonWhenUpdated = [...listMisson]
-  console.log(listMisson)
   useEffect(() => {
     // check and save status misson type questions
     listMissonUpdate?.map(async (misson) => {
