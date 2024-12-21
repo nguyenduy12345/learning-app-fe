@@ -11,7 +11,7 @@ import instance from "../utils/axiosRequest.js";
 
 import { UserInfo } from "../stores/user.store.jsx";
 const ChangeProfile = ({ setIsEditProfile }) => {
-  const { profile, setFetchProfile } = useContext(UserInfo);
+  const { profile, setProfile } = useContext(UserInfo);
   const [fullName, setFullName] = useState(profile?.fullName);
   const [sex, setSex] = useState(profile?.sex);
   const [isSending, setIsSending] = useState(false);
@@ -36,8 +36,14 @@ const ChangeProfile = ({ setIsEditProfile }) => {
     .then((res) => {
       setMessage(res?.data?.message)
       setIsSending(false)
-      setFetchProfile({fullName, sex, numb: Math.random()})
-      setTimeout(() => setIsEditProfile(false),2000)
+      setProfile(prev => {
+        return {
+          ...prev,
+          fullName,
+          sex
+        }
+      })
+      setTimeout(() => setIsEditProfile(false),1000)
     })
     .catch((err) => {
       setIsSending(false)

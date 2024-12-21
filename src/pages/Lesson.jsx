@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 
 import { UserInfo } from "../stores/user.store.jsx";
 import { LoadingContext } from "../stores/loading.store.jsx";
@@ -25,13 +25,12 @@ const Lesson = ({
     setProfile,
     missons,
     setMissons,
-    setFetchProfile,
-    setFetchCourseOfLearningProcess,
+    setCourseOfLearningProcess,
     lessonsOfSummaryLesson,
-    setFetchLessonsOfSummaryLesson,
+    setLessonOfSummaryLesson,
   } = useContext(UserInfo);
   const { setIsLoading } = useContext(LoadingContext);
-  const [indexQuestion, setIndexQuestion] = useState(9);
+  const [indexQuestion, setIndexQuestion] = useState(0);
   const [indexLesson, setIndexLesson] = useState(currentLesson || 1);
   const [questions, setQuestions] = useState(
     lessons[indexLesson - 1] && lessons[indexLesson - 1]?.questions,
@@ -40,12 +39,11 @@ const Lesson = ({
     lessons[indexLesson - 1] && lessons[indexLesson - 1]._id,
   );
   const colorDiv = useRef(null);
-  const calledOnce = useRef(false);
   const [countRequest, setCountRequest] = useState(0);
   const [isCongratulation, setIsCongratulation] = useState(false);
   const [listMisson, setListMisson] = useState([]);
   const [isShowInfoMisson, setIsShowInfoMisson] = useState(false);
-  const [questionsCorrect, setQuestionsCorrect] = useState(0);
+  const [questionsCorrect, setQuestionsCorrect] = useState(7);
   useEffect(() => {
     if (lessons.length === 0) {
       setIsLesson(false);
@@ -76,6 +74,8 @@ const Lesson = ({
     fetchQuestions();
     setLessonId(lessons[indexLesson - 1] && lessons[indexLesson - 1]._id);
   }, [indexLesson, currentLesson]);
+
+  // get misson not complete
   const listMissonUpdate = missons
     .map((misson, index) => {
       if (misson.completed === false) {
@@ -83,6 +83,10 @@ const Lesson = ({
       }
     })
     .filter((item) => item !== undefined);
+
+  // create variable save listMisson send to components ShowStatusMissons
+  let listMissonWhenUpdated = [...listMisson]
+  console.log(listMisson)
   useEffect(() => {
     // check and save status misson type questions
     listMissonUpdate?.map(async (misson) => {
@@ -119,12 +123,23 @@ const Lesson = ({
               +updateProfile.hearts + +misson.misson.missonId.hearts;
             return updateProfile;
           });
-          setListMisson((prev) => [...prev, misson.misson]);
+          setListMisson((prev) => {
+            let updateMisson = [...prev]
+            const findMisson = updateMisson?.findIndex(miss => miss.missonId._id.toString() === misson.misson.milestoneId._id.toString())
+            if(findMisson > -1){
+              return updateMisson
+            }else{
+              return updateMisson = [...prev, misson.misson]
+            }
+          })
+          setIsShowInfoMisson(true)
         } catch (error) {}
       }
+      return
     });
   }, [questionsCorrect]);
-  const handleNextQuestion = async () => {
+  // Next question and handle end lesson
+  const handleNextQuestion = useCallback(async () => {
     if (countRequest === 1) return;
     setCountRequest(1);
     setIndexQuestion(indexQuestion + 1);
@@ -132,7 +147,7 @@ const Lesson = ({
       try {
         // update status milestone when complete all lessons
         if (indexLesson + 1 > lessons.length) {
-          setIsLoading(true)
+          setIsLoading(true);
           await instance.patch("learning_process/update_milestone", {
             courseId,
             sectionId,
@@ -152,7 +167,17 @@ const Lesson = ({
             turns: 5,
             dayStreak: Math.random(),
           });
-          const updateMissonPromises = listMissonUpdate.map(async (misson) => {
+          setProfile((prev) => {
+            const updateProfile = { ...prev };
+            updateProfile.experiences =
+              +updateProfile.experiences +
+              +lessons[indexLesson - 1].experiences;
+            updateProfile.gems =
+              +updateProfile.gems + +lessons[indexLesson - 1].gems;
+            updateProfile.hearts = +updateProfile.hearts + 5;
+            return updateProfile;
+          });
+          const updateMissonPromises = listMissonUpdate.map(async(misson) => {
             switch (misson?.misson?.missonId?.type) {
               case "gems":
                 await instance.patch(
@@ -165,28 +190,17 @@ const Lesson = ({
                       +missons[misson.index].missonId.numberOfRequirements,
                   },
                 );
-                if (
-                  +missons[misson.index].currentProgress +
-                    +lessons[indexLesson - 1].gems >=
-                  +missons[misson.index].missonId.numberOfRequirements
-                ) {
-                  await instance.patch("users/update_asset", {
-                    experiences: misson.misson.missonId.experiences,
-                    gems: misson.misson.missonId.gems,
-                    turns: misson.misson.missonId.hearts,
-                  });
-                }
                 setMissons((prevMissons) => {
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
                     +updateMissons[misson.index].currentProgress +
                     +lessons[indexLesson - 1].gems;
                   updateMissons[misson.index].completed =
-                    +missons[misson.index].currentProgress +
-                      +lessons[indexLesson - 1].gems >=
+                    +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
                 break;
               case "experiences":
                 await instance.patch(
@@ -199,28 +213,18 @@ const Lesson = ({
                       +missons[misson.index].missonId.numberOfRequirements,
                   },
                 );
-                if (
-                  +missons[misson.index].currentProgress +
-                    +lessons[indexLesson - 1].experiences >=
-                  +missons[misson.index].missonId.numberOfRequirements
-                ) {
-                  await instance.patch("users/update_asset", {
-                    experiences: misson.misson.missonId.experiences,
-                    gems: misson.misson.missonId.gems,
-                    turns: misson.misson.missonId.hearts,
-                  });
-                }
                 setMissons((prevMissons) => {
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
                     +updateMissons[misson.index].currentProgress +
                     +lessons[indexLesson - 1].experiences;
                   updateMissons[misson.index].completed =
-                    +missons[misson.index].currentProgress +
-                      +lessons[indexLesson - 1].experiences >=
+                    +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
+                
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
                 break;
               case "days":
               case "lessons":
@@ -233,181 +237,194 @@ const Lesson = ({
                       +missons[misson.index].missonId.numberOfRequirements,
                   },
                 );
-                if (
-                  +missons[misson.index].currentProgress + 1 >=
-                  +missons[misson.index].missonId.numberOfRequirements
-                ) {
-                  await instance.patch("users/update_asset", {
-                    experiences: misson.misson.missonId.experiences,
-                    gems: misson.misson.missonId.gems,
-                    turns: misson.misson.missonId.hearts,
-                  });
-                }
                 setMissons((prevMissons) => {
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
                     +updateMissons[misson.index].currentProgress + 1;
                   updateMissons[misson.index].completed =
-                    +missons[misson.index].currentProgress + 1 >=
+                    +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
                 break;
               default:
             }
           });
-          await Promise.all(updateMissonPromises)
-          setIsLoading(false)
+          await Promise.all(updateMissonPromises);
+          setIsLoading(false);
+          setListMisson((prevListMisson) => {
+            const updateListMisson = [...prevListMisson, ...listMissonWhenUpdated]
+            return updateListMisson
+          })
           setIsCongratulation(true);
           setIsShowInfoMisson(true);
-          const updateMisson = listMissonUpdate.map((misson) => misson.misson);
-          setListMisson((prev) => [...prev, ...updateMisson]);
-          setFetchProfile({ status: "-1 heart", numb: Math.random() });
-          setFetchCourseOfLearningProcess({
-            type: "update status lesson",
-            numb: Math.random(),
-          });
+          setCourseOfLearningProcess((prevCourse) => {
+            const updateCourse = [...prevCourse]
+            const indexCourse = updateCourse.findIndex(
+              (course) => course.courseId._id.toString() === courseId.toString(),
+            );
+            const indexSection = updateCourse[
+              indexCourse
+            ].sections.findIndex(
+              (section) => section.sectionId.toString() === sectionId.toString(),
+            );
+            updateCourse[
+              indexCourse
+            ].sections[indexSection].totalMilestoneDone = +updateCourse[
+              indexCourse
+            ].sections[indexSection].totalMilestoneDone + 1
+            const indexMilestone = updateCourse[indexCourse].sections[
+              indexSection
+            ].milestones.findIndex(
+              (milestone) => milestone.milestoneId.toString() === milestoneId.toString(),
+            );
+            updateCourse[indexCourse].sections[
+              indexSection
+            ].milestones[indexMilestone].currentLesson = indexLesson + 1
+            updateCourse[indexCourse].sections[
+              indexSection
+            ].milestones[indexMilestone].status = 2
+            return updateCourse
+          })
           setCountRequest(0);
           return;
+        } else {
+          // save asset user, increase current lesson, update currentProgress misson
+          setIsLoading(true);
+          await instance.patch("users/update_asset", {
+            experiences: +lessons[indexLesson - 1].experiences,
+            gems: +lessons[indexLesson - 1].gems,
+            turns: 5,
+            dayStreak: Math.random(),
+          });
+          setProfile((prev) => {
+            const updateProfile = { ...prev };
+            updateProfile.experiences =
+              +updateProfile.experiences +
+              +lessons[indexLesson - 1].experiences;
+            updateProfile.gems =
+              +updateProfile.gems + +lessons[indexLesson - 1].gems;
+            updateProfile.hearts = +updateProfile.hearts + 5;
+            return updateProfile;
+          });
+          await instance.patch("learning_process/update_milestone", {
+            courseId,
+            sectionId,
+            milestoneId,
+            currentLesson,
+            totalLessonDone: currentLesson,
+          });
+          const updateMissonPromises = listMissonUpdate.map(async (misson) => {
+            switch (misson?.misson?.missonId?.type) {
+              case "gems":
+                await instance.patch(
+                  `user_missons/update?missonId=${misson.misson.missonId._id}`,
+                  {
+                    currentProgress: +lessons[indexLesson - 1].gems,
+                    status:
+                      +missons[misson.index].currentProgress +
+                        +lessons[indexLesson - 1].gems >=
+                      +misson.misson.missonId.numberOfRequirements,
+                  },
+                );
+                setMissons((prevMissons) => {
+                  const updateMissons = [...prevMissons];
+                  updateMissons[misson.index].currentProgress =
+                    +updateMissons[misson.index].currentProgress +
+                    +lessons[indexLesson - 1].gems;
+                  updateMissons[misson.index].completed =
+                    +missons[misson.index].currentProgress >=
+                    +misson.misson.missonId.numberOfRequirements;
+                  return updateMissons;
+                });
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
+                break;
+              case "experiences":
+                await instance.patch(
+                  `user_missons/update?missonId=${misson.misson.missonId._id}`,
+                  {
+                    currentProgress: +lessons[indexLesson - 1].experiences,
+                    status:
+                      +missons[misson.index].currentProgress +
+                        +lessons[indexLesson - 1].experiences >=
+                      +misson.misson.missonId.numberOfRequirements,
+                  },
+                );
+                setMissons((prevMissons) => {
+                  const updateMissons = [...prevMissons];
+                  updateMissons[misson.index].currentProgress =
+                    +updateMissons[misson.index].currentProgress +
+                    +lessons[indexLesson - 1].experiences;
+                  updateMissons[misson.index].completed =
+                    +missons[misson.index].currentProgress >=
+                    +misson.misson.missonId.numberOfRequirements;
+                  return updateMissons;
+                });
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
+                break;
+              case "days":
+              case "lessons":
+                await instance.patch(
+                  `user_missons/update?missonId=${misson.misson.missonId._id}`,
+                  {
+                    currentProgress: 1,
+                    status:
+                      +missons[misson.index].currentProgress + 1 >=
+                      +misson.misson.missonId.numberOfRequirements,
+                  },
+                );
+                setMissons((prevMissons) => {
+                  const updateMissons = [...prevMissons];
+                  updateMissons[misson.index].currentProgress =
+                    +updateMissons[misson.index].currentProgress + 1;
+                  updateMissons[misson.index].completed =
+                    +missons[misson.index].currentProgress >=
+                    +misson.misson.missonId.numberOfRequirements;
+                  return updateMissons;
+                });
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
+                break;
+              default:
+            }
+          });
+          await Promise.all(updateMissonPromises);
+          setIsLoading(false);
+          setListMisson((prevListMisson) => {
+            const updateListMisson = [...prevListMisson, ...listMissonWhenUpdated]
+            return updateListMisson
+          })
+          setIsCongratulation(true);
+          setIsShowInfoMisson(true);
+          setCurrentLesson(indexLesson + 1);
+          setCourseOfLearningProcess((prevCourse) => {
+            const updateCourse = [...prevCourse]
+            const indexCourse = updateCourse.findIndex(
+              (course) => course.courseId._id.toString() === courseId.toString(),
+            );
+            const indexSection = updateCourse[
+              indexCourse
+            ].sections.findIndex(
+              (section) => section.sectionId.toString() === sectionId.toString(),
+            );
+            const indexMilestone = updateCourse[indexCourse].sections[
+              indexSection
+            ].milestones.findIndex(
+              (milestone) => milestone.milestoneId.toString() === milestoneId.toString(),
+            );
+            updateCourse[indexCourse].sections[
+              indexSection
+            ].milestones[indexMilestone].currentLesson = indexLesson + 1
+            return updateCourse
+          })
+          setCountRequest(0);
         }
-        // save asset user, increase current lesson, update currentProgress misson
-        setIsLoading(true)
-        await instance.patch("users/update_asset", {
-          experiences: +lessons[indexLesson - 1].experiences,
-          gems: +lessons[indexLesson - 1].gems,
-          turns: 5,
-          dayStreak: Math.random(),
-        });
-        await instance.patch("learning_process/update_milestone", {
-          courseId,
-          sectionId,
-          milestoneId,
-          currentLesson,
-          totalLessonDone: currentLesson,
-        });
-        const updateMissonPromises = listMissonUpdate.map(async (misson) => {
-          switch (misson?.misson?.missonId?.type) {
-            case "gems":
-              await instance.patch(
-                `user_missons/update?missonId=${misson.misson.missonId._id}`,
-                {
-                  currentProgress: +lessons[indexLesson - 1].gems,
-                  status:
-                    +missons[misson.index].currentProgress +
-                      +lessons[indexLesson - 1].gems >=
-                    +missons[misson.index].missonId.numberOfRequirements,
-                },
-              );
-              if (
-                +missons[misson.index].currentProgress +
-                  +lessons[indexLesson - 1].gems >=
-                +missons[misson.index].missonId.numberOfRequirements
-              ) {
-                await instance.patch("users/update_asset", {
-                  experiences: misson.misson.missonId.experiences,
-                  gems: misson.misson.missonId.gems,
-                  turns: misson.misson.missonId.hearts,
-                });
-              }
-              setMissons((prevMissons) => {
-                const updateMissons = [...prevMissons];
-                updateMissons[misson.index].currentProgress =
-                  +updateMissons[misson.index].currentProgress +
-                  +lessons[indexLesson - 1].gems;
-                updateMissons[misson.index].completed =
-                  +missons[misson.index].currentProgress +
-                    +lessons[indexLesson - 1].gems >=
-                  +missons[misson.index].missonId.numberOfRequirements;
-                return updateMissons;
-              });
-              break;
-            case "experiences":
-              await instance.patch(
-                `user_missons/update?missonId=${misson.misson.missonId._id}`,
-                {
-                  currentProgress: +lessons[indexLesson - 1].experiences,
-                  status:
-                    +missons[misson.index].currentProgress +
-                      +lessons[indexLesson - 1].experiences >=
-                    +missons[misson.index].missonId.numberOfRequirements,
-                },
-              );
-              if (
-                +missons[misson.index].currentProgress +
-                  +lessons[indexLesson - 1].experiences >=
-                +missons[misson.index].missonId.numberOfRequirements
-              ) {
-                await instance.patch("users/update_asset", {
-                  experiences: misson.misson.missonId.experiences,
-                  gems: misson.misson.missonId.gems,
-                  turns: misson.misson.missonId.hearts,
-                });
-              }
-              setMissons((prevMissons) => {
-                const updateMissons = [...prevMissons];
-                updateMissons[misson.index].currentProgress =
-                  +updateMissons[misson.index].currentProgress +
-                  +lessons[indexLesson - 1].experiences;
-                updateMissons[misson.index].completed =
-                  +missons[misson.index].currentProgress +
-                    +lessons[indexLesson - 1].experiences >=
-                  +missons[misson.index].missonId.numberOfRequirements;
-                return updateMissons;
-              });
-              break;
-            case "days":
-            case "lessons":
-              await instance.patch(
-                `user_missons/update?missonId=${misson.misson.missonId._id}`,
-                {
-                  currentProgress: 1,
-                  status:
-                    +missons[misson.index].currentProgress + 1 >=
-                    +missons[misson.index].missonId.numberOfRequirements,
-                },
-              );
-              if (
-                +missons[misson.index].currentProgress + 1 >=
-                +missons[misson.index].missonId.numberOfRequirements
-              ) {
-                await instance.patch("users/update_asset", {
-                  experiences: misson.misson.missonId.experiences,
-                  gems: misson.misson.missonId.gems,
-                  turns: misson.misson.missonId.hearts,
-                });
-              }
-              setMissons((prevMissons) => {
-                const updateMissons = [...prevMissons];
-                updateMissons[misson.index].currentProgress =
-                  +updateMissons[misson.index].currentProgress + 1;
-                updateMissons[misson.index].completed =
-                  +missons[misson.index].currentProgress + 1 >=
-                  +missons[misson.index].missonId.numberOfRequirements;
-                return updateMissons;
-              });
-              break;
-            default:
-          }
-        });
-        await Promise.all(updateMissonPromises);
-        setIsLoading(false)
-        setIsCongratulation(true);
-        setIsShowInfoMisson(true);
-        setCurrentLesson(indexLesson + 1);
-        const updateMisson = listMissonUpdate.map((misson) => misson.misson);
-        setListMisson((prev) => [...prev, ...updateMisson]);
-        setFetchProfile({ status: "-1 heart", numb: Math.random() });
-        setFetchCourseOfLearningProcess({
-          type: "update current lesson",
-          numb: Math.random(),
-        });
-        setCountRequest(0);
       } catch (error) {
         setCountRequest(0);
       }
     }
     setCountRequest(0);
-  };
+  }, [indexQuestion]);
   const handleBackToMilestonePage = () => {
     setIsLesson(false);
   };
@@ -417,27 +434,23 @@ const Lesson = ({
   }, [questions, indexQuestion]);
   useEffect(() => {
     const addLessonToSummaryLesson = async () => {
+      const findIndexLesson = lessonsOfSummaryLesson.findIndex(
+        (lesson) => lesson.lesson._id.toString() === lessonId.toString(),
+      );
+      if (findIndexLesson > -1) return;
       try {
-        const findIndexLesson = lessonsOfSummaryLesson.findIndex(
-          (lesson) => lesson.lesson._id.toString() === lessonId.toString(),
-        );
-        if (findIndexLesson > -1) return;
-        if (!calledOnce.current) {
-          await instance.patch("summary_lesson/add_lesson", { lessonId });
-          setFetchLessonsOfSummaryLesson({
-            lessonId,
-            numb: Math.random(),
+        await instance.patch("summary_lesson/add_lesson", { lessonId });
+        setLessonOfSummaryLesson((prev) => {
+          const updateSumaryLesson = [...prev];
+          updateSumaryLesson.push({
+            lesson: { _id: lessonId },
+            wrongQuestions: [],
           });
-          calledOnce.current = true;
-        }
+          return updateSumaryLesson;
+        });
       } catch (error) {}
-      return () => {
-        calledOnce.current = false;
-      };
     };
-    if (lessonId) {
-      addLessonToSummaryLesson();
-    }
+    addLessonToSummaryLesson();
   }, [lessonId]);
   return (
     <>
@@ -451,6 +464,7 @@ const Lesson = ({
       )}
       <ShowStatusMissons
         listMisson={listMisson}
+        setListMisson={setListMisson}
         isShowInfoMisson={isShowInfoMisson}
         setIsShowInfoMisson={setIsShowInfoMisson}
       />

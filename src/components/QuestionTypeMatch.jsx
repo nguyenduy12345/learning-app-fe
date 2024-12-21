@@ -20,31 +20,6 @@ const QuestionTypeMatch = ({
   const [listPaire, setListPaire] = useState([]);
   const [isLeftColChoose, setIsLeftColChoose] = useState(0);
 
-  useEffect(() => {
-    const saveLessonToSumaryLesson = async () => {
-      try {
-        const indexLesson = lessonsOfSummaryLesson.findIndex(
-          (lesson) => lesson.lesson._id.toString() === lessonId,
-        );
-        if (indexLesson < 0) {
-          await instance.patch("summary_lesson/add_lesson", {
-            lessonId,
-          });
-          setLessonOfSummaryLesson((prev) => {
-            const updateSumaryLesson = [...prev];
-            updateSumaryLesson.push({ lesson: lessonId, wrongQuestions: [] });
-            return updateSumaryLesson;
-          });
-          return;
-        }
-        return;
-      } catch (error) {
-        return error;
-      }
-    };
-    saveLessonToSumaryLesson();
-  }, [lessonId]);
-
   // covert list paire arr to obj
   useEffect(() => {
     const obj = [];

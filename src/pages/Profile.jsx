@@ -6,7 +6,7 @@ import MainLayout from "../layouts/MainLayout.jsx";
 import ChangePassword from "../components/ChangePassword.jsx";
 import ChangeProfile from "../components/ChangeProfile.jsx";
   const Profile = () => {
-  const { profile, setFetchProfile } = useContext(UserInfo);
+  const { profile, setProfile } = useContext(UserInfo);
   const [isEditProfile, setIsEditProfile] = useState(false);
   const [changeAvatar, setChangeAvatar] = useState(false)
   const [statusChangAvatar, setStatusChangeAvatar] = useState('Lưu ảnh')
@@ -41,7 +41,9 @@ import ChangeProfile from "../components/ChangeProfile.jsx";
         },
       })
       .then((res) => {
-        setFetchProfile('changeavatar' + res.data.avatar)
+        setProfile((prev) => {
+          return {...prev, avatar: res.data.avatar}
+        })
         setStatusChangeAvatar('Lưu ảnh')
         setAvatar(false)
         setMessage(res.data.message)

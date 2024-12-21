@@ -26,30 +26,6 @@ const QuestionTypeChoose = ({
     });
     setAnswers(converToArrObj);
   }, [question]);
-  useEffect(() => {
-    const saveLessonToSumaryLesson = async() => {
-      try {
-        const indexLesson = lessonsOfSummaryLesson.findIndex(
-          (lesson) => lesson.lesson._id.toString() === lessonId,
-        );
-        if(indexLesson < 0){
-          await instance.patch('summary_lesson/add_lesson', {
-            lessonId
-          })
-          setLessonOfSummaryLesson((prev) => {
-            const updateSumaryLesson = [...prev]
-            updateSumaryLesson.push({lesson: lessonId, wrongQuestions: []})
-            return updateSumaryLesson
-          })
-          return
-        }
-        return
-      } catch (error) {
-        return error
-      }
-    }
-    saveLessonToSumaryLesson()
-  },[lessonId])
   const renderStatus = (index) => {
     switch (index) {
       case 0:
@@ -125,8 +101,10 @@ const QuestionTypeChoose = ({
             lessonId,
             questionId: question._id,
           });
-          lessonsOfSummaryLesson[findIndexLesson].wrongQuestions.push(question._id.toString())
-          setLessonOfSummaryLesson([...lessonsOfSummaryLesson])
+          lessonsOfSummaryLesson[findIndexLesson].wrongQuestions.push(
+            question._id.toString(),
+          );
+          setLessonOfSummaryLesson([...lessonsOfSummaryLesson]);
           setCountRequest(0);
           return;
         }

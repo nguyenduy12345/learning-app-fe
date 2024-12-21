@@ -48,7 +48,7 @@ const Courses = () => {
               if(courseIndex > -1){
                 updateCourses.splice(courseIndex, 1)
                 updateCourses.unshift({
-                  ...updateCourses[courseIndex]
+                  ...prevCourse[courseIndex]
                 })
                 return updateCourses
               }
@@ -67,10 +67,7 @@ const Courses = () => {
             const updateCourses = [...prevCourse]
             updateCourses.unshift({
               courseId: item,
-              currentLesson: 1,
               status: 1,
-              totalLesson: 0,
-              totalLessonDone: 0,
               sections: []
             })
             return updateCourses

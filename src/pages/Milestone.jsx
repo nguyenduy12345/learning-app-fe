@@ -99,7 +99,7 @@ const Milestone = () => {
       }
     };
     updateTotalMilestone();
-  }, []);
+  }, [sectionId]);
   // format item
   milestones &&
     milestones.map((milestone) => {

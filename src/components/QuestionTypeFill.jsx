@@ -20,31 +20,6 @@ const QuestionTypeFill = ({
   const [countRequest, setCountRequest] = useState(0);
   const emtyDiv = useRef();
 
-  useEffect(() => {
-    const saveLessonToSumaryLesson = async () => {
-      try {
-        const indexLesson = lessonsOfSummaryLesson.findIndex(
-          (lesson) => lesson.lesson._id.toString() === lessonId,
-        );
-        if (indexLesson < 0) {
-          await instance.patch("summary_lesson/add_lesson", {
-            lessonId,
-          });
-          setLessonOfSummaryLesson((prev) => {
-            const updateSumaryLesson = [...prev];
-            updateSumaryLesson.push({ lesson: lessonId, wrongQuestions: [] });
-            return updateSumaryLesson;
-          });
-          return;
-        }
-        return;
-      } catch (error) {
-        return error;
-      }
-    };
-    saveLessonToSumaryLesson();
-  }, [lessonId]);
-
   const handleDragOverWord = (e) => {
     e.preventDefault();
   };
