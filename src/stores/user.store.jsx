@@ -1,20 +1,30 @@
-import { createContext, useState, useEffect} from "react";
+import { createContext, useState, useEffect, useContext} from "react";
+
+import { LoadingContext } from "./loading.store.jsx";
+
 import instance from "../utils/axiosRequest.js";
 
 export const UserInfo = createContext({});
 
 const UserInfoProvide = ({ children }) => {
+  const { setIsLoading} = useContext(LoadingContext)
   const [profile, setProfile] = useState()
   const [fetchProfile, setFetchProfile] = useState([]);
   const [courseOfLearningProcess, setCourseOfLearningProcess] = useState([])
   const [missons, setMissons] = useState([])
-  const [fetchMisson, setFetchMisson] = useState()
   const [fetchCourseOfLearningProcess, setFetchCourseOfLearningProcess] = useState([])
   const [lessonsOfSummaryLesson, setLessonOfSummaryLesson] = useState([])
-  const [fetchLessonsOfSummaryLesson, setFetchLessonsOfSummaryLesson] = useState([])
   useEffect(() =>{
     const getUser = async() =>{
-        await instance.get('/users/profile')
+      setIsLoading(true)
+        await instance.get('/users/profile',{
+          onDownloadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            if(+percentCompleted >= 100){
+              setIsLoading(false)
+            };
+          }
+        })
         .then((res) => {
           setProfile(res?.data?.data?.user)
         })
@@ -27,6 +37,7 @@ const UserInfoProvide = ({ children }) => {
         await instance.get('/learning_process')
         .then((res) => {
           setCourseOfLearningProcess(res?.data?.data?.courses)
+          res.data.data.courses.length === 0 ? navigate('/courses') : navigate('/learning')
         })
         .catch(err => err)
     }
@@ -41,10 +52,18 @@ const UserInfoProvide = ({ children }) => {
         .catch(err => err)
     }
     getListLesson()
-  }, [fetchLessonsOfSummaryLesson])
+  }, [])
   useEffect(() =>{
     const getMissons = async() =>{
-        await instance.get('/user_missons')
+        setIsLoading(true)
+        await instance.get('/user_missons',{
+          onDownloadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            if(+percentCompleted >= 100){
+              setIsLoading(false)
+            };
+          }
+        })
         .then((res) => {
           setMissons(res.data.data.missons)
         })
@@ -53,7 +72,7 @@ const UserInfoProvide = ({ children }) => {
     getMissons()
   }, [])
   return (
-    <UserInfo.Provider value={{ profile, setProfile, setFetchProfile, courseOfLearningProcess, missons, setMissons, setFetchCourseOfLearningProcess, lessonsOfSummaryLesson, setFetchLessonsOfSummaryLesson}}>
+    <UserInfo.Provider value={{ profile, setProfile, setFetchProfile, courseOfLearningProcess, setCourseOfLearningProcess, missons, setMissons, setFetchCourseOfLearningProcess, lessonsOfSummaryLesson, setLessonOfSummaryLesson}}>
       {children}
     </UserInfo.Provider>
   );

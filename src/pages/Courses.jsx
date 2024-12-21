@@ -1,28 +1,37 @@
 import { useState, useEffect, useContext } from "react";
-import { useSearchParams, useNavigate, Outlet } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 import instance from "../utils/axiosRequest.js";
 import Course from "../components/Course.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 
 import { UserInfo } from "../stores/user.store.jsx";
-
+import { LoadingContext } from "../stores/loading.store.jsx";
 const Courses = () => {
-  const { courseOfLearningProcess, setFetchCourseOfLearningProcess } =
+  const { courseOfLearningProcess, setCourseOfLearningProcess} =
     useContext(UserInfo);
+  const {setIsLoading} = useContext(LoadingContext)
   const [listCourse, setListCourse] = useState([]);
   const [countRequest, setCountRequest] = useState(0);
   let [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   useEffect(() => {
     const getCourse = async () => {
+      setIsLoading(true)
       await instance
-        .get("courses")
+        .get("courses",{
+          onDownloadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            if(+percentCompleted >= 100){
+              setIsLoading(false)
+            };
+          }
+        })
         .then((res) => setListCourse(res?.data?.data?.courses || []))
         .catch((err) => err);
     };
     getCourse();
-  }, [courseOfLearningProcess]);
+  }, []);
   const handleAddCourse = async (item, id) => {
     if (countRequest === 1) return;
     setCountRequest(1);
@@ -33,7 +42,17 @@ const Courses = () => {
           .patch(`learning_process/update_recent_access?courseId=${id}`)
           .then((res) => {
             navigate(`/learning?courseId=${id}`);
-            setFetchCourseOfLearningProcess(id + "update recent access");
+            setCourseOfLearningProcess((prevCourse) => {
+              const updateCourses = [...prevCourse]
+              const courseIndex = updateCourses.findIndex(course => course.courseId._id.toString() === id)
+              if(courseIndex > -1){
+                updateCourses.splice(courseIndex, 1)
+                updateCourses.unshift({
+                  ...updateCourses[courseIndex]
+                })
+                return updateCourses
+              }
+            })
             setCountRequest(0);
           })
           .catch((err) => {
@@ -44,7 +63,18 @@ const Courses = () => {
         try {
           await instance.post(`learning_process/add_course?courseId=${id}`);
           setSearchParams({ courseId: id });
-          setFetchCourseOfLearningProcess(id + "add");
+          setCourseOfLearningProcess((prevCourse) => {
+            const updateCourses = [...prevCourse]
+            updateCourses.unshift({
+              courseId: item,
+              currentLesson: 1,
+              status: 1,
+              totalLesson: 0,
+              totalLessonDone: 0,
+              sections: []
+            })
+            return updateCourses
+          })
           navigate(`/learning?courseId=${id}`);
           setCountRequest(0);
         } catch (error) {

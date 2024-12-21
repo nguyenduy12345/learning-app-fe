@@ -122,7 +122,7 @@ const Login = () => {
               )}
             </div>
             <button className="h-16 w-full bg-gradient-to-r from-pink-400 to-blue-600 p-2 text-2xl font-bold text-white hover:text-black">
-              {isSubmitting ? "Đang gửi" : "Đăng Nhập"}
+              {isSubmitting ? "Đang gửi..." : "Đăng Nhập"}
             </button>
             {messageLogin && (
               <p className="mt-1 w-full text-center font-noto text-xl text-red-500">

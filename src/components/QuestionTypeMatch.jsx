@@ -3,12 +3,14 @@ import { useEffect, useState, useContext } from "react";
 import { UserInfo } from "../stores/user.store.jsx";
 
 import instance from "../utils/axiosRequest.js";
-const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
-  const {
-    setProfile,
-    lessonsOfSummaryLesson,
-    setFetchLessonsOfSummaryLesson,
-  } = useContext(UserInfo);
+const QuestionTypeMatch = ({
+  question,
+  lessonId,
+  handleNextQuestion,
+  setQuestionsCorrect,
+}) => {
+  const { setProfile, lessonsOfSummaryLesson, setLessonOfSummaryLesson } =
+    useContext(UserInfo);
   const [leftOptions, setLeftOptions] = useState([]);
   const [rightOptions, setRightOptions] = useState([]);
   const [correct, setCorrect] = useState();
@@ -17,6 +19,32 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestion
   const [listWord, setListWord] = useState([]);
   const [listPaire, setListPaire] = useState([]);
   const [isLeftColChoose, setIsLeftColChoose] = useState(0);
+
+  useEffect(() => {
+    const saveLessonToSumaryLesson = async () => {
+      try {
+        const indexLesson = lessonsOfSummaryLesson.findIndex(
+          (lesson) => lesson.lesson._id.toString() === lessonId,
+        );
+        if (indexLesson < 0) {
+          await instance.patch("summary_lesson/add_lesson", {
+            lessonId,
+          });
+          setLessonOfSummaryLesson((prev) => {
+            const updateSumaryLesson = [...prev];
+            updateSumaryLesson.push({ lesson: lessonId, wrongQuestions: [] });
+            return updateSumaryLesson;
+          });
+          return;
+        }
+        return;
+      } catch (error) {
+        return error;
+      }
+    };
+    saveLessonToSumaryLesson();
+  }, [lessonId]);
+
   // covert list paire arr to obj
   useEffect(() => {
     const obj = [];
@@ -78,19 +106,21 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestion
       return;
     }
     try {
-      const result = await instance.post(`questions/${question._id}`, {answer: listPaire} )
+      const result = await instance.post(`questions/${question._id}`, {
+        answer: listPaire,
+      });
       if (result.data.data.correct) {
         setCorrect(true);
-        setQuestionsCorrect(prev => prev + 1)
+        setQuestionsCorrect((prev) => prev + 1);
         setCountRequest(0);
         return;
       } else {
         setCorrect(false);
-        setQuestionsCorrect(0)
+        setQuestionsCorrect(0);
         await instance.patch("users/update_asset", {
           hearts: Math.random(),
         });
-        setProfile(prevProfile => ({
+        setProfile((prevProfile) => ({
           ...prevProfile,
           hearts: prevProfile.hearts - 1,
         }));
@@ -107,21 +137,16 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestion
             setCountRequest(0);
             return;
           }
-          await instance
-            .patch("summary_lesson/update_lesson", {
-              lessonId,
-              questionId: question._id,
-            })
-            .then(() => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            })
-            .catch((err) => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            });
+          await instance.patch("summary_lesson/update_lesson", {
+            lessonId,
+            questionId: question._id,
+          });
+          lessonsOfSummaryLesson[findIndexLesson].wrongQuestions.push(
+            question._id.toString(),
+          );
+          setLessonOfSummaryLesson([...lessonsOfSummaryLesson]);
+          setCountRequest(0);
+          return;
         }
         return;
       }
@@ -175,7 +200,7 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestion
                     <li
                       onClick={() => handleGetWordFromLeft(option?.left, index)}
                       key={index}
-                      className={`border-1 text-md relative flex h-[2.5rem] lg:h-[3rem] w-full cursor-pointer items-center justify-center rounded-xl border-[2px] border-b-[4px] border-[#e5e5e5] p-1 font-noto hover:bg-green-200 active:scale-95 md:text-lg`}
+                      className={`border-1 text-md relative flex h-[2.5rem] w-full cursor-pointer items-center justify-center rounded-xl border-[2px] border-b-[4px] border-[#e5e5e5] p-1 font-noto hover:bg-green-200 active:scale-95 md:text-lg lg:h-[3rem]`}
                     >
                       <div className="absolute left-[0.5rem] flex h-[2rem] w-[2rem] items-center justify-center rounded-full border-[2px] border-[#e5e5e5] text-[#afafaf] sm:left-[1rem]">
                         {index + 1}
@@ -192,7 +217,7 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestion
                         handleGetWordFromRight(option?.right, index)
                       }
                       key={index}
-                      className={`border-1 text-md relative flex h-[2.5rem] lg:h-[3rem] w-full cursor-pointer items-center justify-center rounded-xl border-[2px] border-b-[4px] border-[#e5e5e5] p-1 font-noto hover:bg-green-200 active:scale-95 md:text-lg`}
+                      className={`border-1 text-md relative flex h-[2.5rem] w-full cursor-pointer items-center justify-center rounded-xl border-[2px] border-b-[4px] border-[#e5e5e5] p-1 font-noto hover:bg-green-200 active:scale-95 md:text-lg lg:h-[3rem]`}
                     >
                       <div className="absolute left-[0.5rem] flex h-[2rem] w-[2rem] items-center justify-center rounded-full border-[2px] border-[#e5e5e5] text-[#afafaf] sm:left-[1rem]">
                         {index + 1}
@@ -203,7 +228,7 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestion
               </ul>
             </div>
 
-            <h4 className="md:xl mb-2 mt-5 font-noto text-md md:text-md xl:text-lg lg:mb-5 font-medium">
+            <h4 className="md:xl text-md md:text-md mb-2 mt-5 font-noto font-medium lg:mb-5 xl:text-lg">
               Các từ đã nối:{" "}
             </h4>
             <ul className="flex flex-wrap justify-evenly gap-2">
@@ -211,7 +236,7 @@ const QuestionTypeMatch = ({ question, lessonId, handleNextQuestion, setQuestion
                 listPaire.map((item, index) => (
                   <li
                     key={index}
-                    className="text-md flex rounded-xl border-[2px] border-b-[4px] border-[#e5e5e5] bg-white px-4 lg:py-1 lg:px-6 font-noto"
+                    className="text-md flex rounded-xl border-[2px] border-b-[4px] border-[#e5e5e5] bg-white px-4 font-noto lg:px-6 lg:py-1"
                   >
                     <p>{`${item.left ? item.left + "__" : ""}`}</p>
                     <p> {item.right ? item.right : ""}</p>

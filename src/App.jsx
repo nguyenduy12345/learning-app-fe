@@ -1,27 +1,33 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import 'lazysizes';
 
-import Home from './pages/Home.jsx'
-import Register from './pages/Register.jsx'
-import Login from './pages/Login.jsx'
-import Courses from './pages/Courses.jsx'
-import Learning from './pages/Learning.jsx'
-import LearningPage from './pages/LearningPage.jsx';
-import Profile from './pages/Profile.jsx'
-import Rank from './pages/Rank.jsx'
-import Misson from './pages/Misson.jsx'
-import Alphabet from './pages/Alphabet.jsx'
-import Character from './pages/Character.jsx'
-import Milestone from './pages/Milestone.jsx'
-import Lesson from './pages/Lesson.jsx'
-import ForgotPassword from './pages/ForgotPassword.jsx'
-import PrivateRoute from './components/PrivateRoute.jsx';
+const Home = lazy(() => import('./pages/Home.jsx'))
+const Register = lazy(() => import('./pages/Register.jsx'))
+const Login = lazy(() => import('./pages/Login.jsx'))
+const Courses = lazy(() => import('./pages/Courses.jsx'))
+const Learning = lazy(() => import('./pages/Learning.jsx'))
+const LearningPage = lazy(() => import('./pages/LearningPage.jsx'))
+const Profile = lazy(() => import('./pages/Profile.jsx'))
+const Rank = lazy(() => import('./pages/Rank.jsx'))
+const Misson = lazy(() => import('./pages/Misson.jsx'))
+const Alphabet = lazy(() => import('./pages/Alphabet.jsx'))
+const Character = lazy(() => import('./pages/Character.jsx'))
+const Milestone = lazy(() => import('./pages/Milestone.jsx'))
+const Lesson = lazy(() => import('./pages/Lesson.jsx') ) 
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword.jsx'))
+const PrivateRoute  = lazy(() => import('./components/PrivateRoute.jsx'))
+const Loading = lazy(() => import('./components/Loading.jsx'))
 
 import UserInfoProvide from './stores/user.store.jsx'
+import LoadingContextProvider from './stores/loading.store.jsx';
 function App() {
   return (
     <>
     <Router>
+    <Suspense fallback={<h1>Loading...</h1>}>
+      <LoadingContextProvider>
+      <Loading />
       <UserInfoProvide >
       <Routes>
         <Route path='/' element={<Home />} />
@@ -45,6 +51,8 @@ function App() {
         <Route path='*' />
       </Routes>
       </UserInfoProvide>
+      </LoadingContextProvider>
+      </Suspense>
     </Router>
     </>
   )

@@ -4,12 +4,14 @@ import { UserInfo } from "../stores/user.store.jsx";
 
 import instance from "../utils/axiosRequest.js";
 
-const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
-  const {
-    setProfile,
-    lessonsOfSummaryLesson,
-    setFetchLessonsOfSummaryLesson,
-  } = useContext(UserInfo);
+const QuestionTypeChoose = ({
+  question,
+  lessonId,
+  handleNextQuestion,
+  setQuestionsCorrect,
+}) => {
+  const { setProfile, lessonsOfSummaryLesson, setLessonOfSummaryLesson } =
+    useContext(UserInfo);
   const [correct, setCorrect] = useState();
   const [choose, setChoose] = useState();
   const [answers, setAnswers] = useState([]);
@@ -24,6 +26,30 @@ const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion, setQuestio
     });
     setAnswers(converToArrObj);
   }, [question]);
+  useEffect(() => {
+    const saveLessonToSumaryLesson = async() => {
+      try {
+        const indexLesson = lessonsOfSummaryLesson.findIndex(
+          (lesson) => lesson.lesson._id.toString() === lessonId,
+        );
+        if(indexLesson < 0){
+          await instance.patch('summary_lesson/add_lesson', {
+            lessonId
+          })
+          setLessonOfSummaryLesson((prev) => {
+            const updateSumaryLesson = [...prev]
+            updateSumaryLesson.push({lesson: lessonId, wrongQuestions: []})
+            return updateSumaryLesson
+          })
+          return
+        }
+        return
+      } catch (error) {
+        return error
+      }
+    }
+    saveLessonToSumaryLesson()
+  },[lessonId])
   const renderStatus = (index) => {
     switch (index) {
       case 0:
@@ -64,19 +90,21 @@ const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion, setQuestio
       return;
     }
     try {
-      const result = await instance.post(`questions/${question._id}`, {answer: choose - 1} )
+      const result = await instance.post(`questions/${question._id}`, {
+        answer: choose - 1,
+      });
       if (result.data.data.correct) {
         setCountRequest(0);
-        setQuestionsCorrect(prev => prev + 1)
+        setQuestionsCorrect((prev) => prev + 1);
         setCorrect(true);
         return;
       } else {
-        setQuestionsCorrect(0)
+        setQuestionsCorrect(0);
         setCorrect(false);
         await instance.patch("users/update_asset", {
           hearts: Math.random(),
         });
-        setProfile(prevProfile => ({
+        setProfile((prevProfile) => ({
           ...prevProfile,
           hearts: prevProfile.hearts - 1,
         }));
@@ -93,26 +121,19 @@ const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion, setQuestio
             setCountRequest(0);
             return;
           }
-          await instance
-            .patch("summary_lesson/update_lesson", {
-              lessonId,
-              questionId: question._id,
-            })
-            .then(() => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            })
-            .catch((err) => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            });
+          await instance.patch("summary_lesson/update_lesson", {
+            lessonId,
+            questionId: question._id,
+          });
+          lessonsOfSummaryLesson[findIndexLesson].wrongQuestions.push(question._id.toString())
+          setLessonOfSummaryLesson([...lessonsOfSummaryLesson])
+          setCountRequest(0);
+          return;
         }
         return;
       }
     } catch (error) {
-      setCountRequest(0)
+      setCountRequest(0);
     }
   };
   const handleNextNewQuestion = () => {
@@ -136,7 +157,7 @@ const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion, setQuestio
                 <img
                   src="/images/meo_image_learning.png"
                   alt=""
-                  className="mr-2 h-10 w-10 md:mr-5 md:h-24 md:w-24 lazyload"
+                  className="lazyload mr-2 h-10 w-10 md:mr-5 md:h-24 md:w-24"
                 />
                 <p className="flex items-end font-noto md:text-xl">
                   {question?.question}
@@ -164,7 +185,7 @@ const QuestionTypeChoose = ({ question, lessonId, handleNextQuestion, setQuestio
           </div>
 
           <div
-            className={`fixed bottom-0 h-[10rem] lg:h-[13rem] w-full ${correct === true ? "bg-[#d7ffb8]" : correct === false ? "bg-[#ffdfe0]" : "bg-[#ffffff]"} border-t-2 border-t-[#e5e5e5] px-3 py-2 md:mt-6 md:px-0 md:py-3`}
+            className={`fixed bottom-0 h-[10rem] w-full lg:h-[13rem] ${correct === true ? "bg-[#d7ffb8]" : correct === false ? "bg-[#ffdfe0]" : "bg-[#ffffff]"} border-t-2 border-t-[#e5e5e5] px-3 py-2 md:mt-6 md:px-0 md:py-3`}
           >
             <div className="relative mx-auto flex w-full justify-between md:w-[65%]">
               <div className="cursor-pointer">

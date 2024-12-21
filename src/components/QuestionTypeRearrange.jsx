@@ -4,17 +4,44 @@ import { UserInfo } from "../stores/user.store.jsx";
 
 import instance from "../utils/axiosRequest.js";
 
-const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
-  const {
-    setProfile,
-    lessonsOfSummaryLesson,
-    setFetchLessonsOfSummaryLesson,
-  } = useContext(UserInfo);
+const QuestionTypeRearrange = ({
+  question,
+  lessonId,
+  handleNextQuestion,
+  setQuestionsCorrect,
+}) => {
+  const { setProfile, lessonsOfSummaryLesson, setLessonOfSummaryLesson } =
+    useContext(UserInfo);
   const [correct, setCorrect] = useState();
-  const [listWord, setListWord] = useState([])
+  const [listWord, setListWord] = useState([]);
   const [words, setWords] = useState([]);
   const [countRequest, setCountRequest] = useState(0);
   const [message, setMessage] = useState("");
+  
+  useEffect(() => {
+    const saveLessonToSumaryLesson = async () => {
+      try {
+        const indexLesson = lessonsOfSummaryLesson.findIndex(
+          (lesson) => lesson.lesson._id.toString() === lessonId,
+        );
+        if (indexLesson < 0) {
+          await instance.patch("summary_lesson/add_lesson", {
+            lessonId,
+          });
+          setLessonOfSummaryLesson((prev) => {
+            const updateSumaryLesson = [...prev];
+            updateSumaryLesson.push({ lesson: lessonId, wrongQuestions: [] });
+            return updateSumaryLesson;
+          });
+          return;
+        }
+        return;
+      } catch (error) {
+        return error;
+      }
+    };
+    saveLessonToSumaryLesson();
+  }, [lessonId]);
   useEffect(() => {
     const converToArrObj = question?.words?.map((word) => {
       return {
@@ -25,7 +52,7 @@ const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion, setQues
     setWords(converToArrObj);
   }, [question]);
   const handleSelectWord = (word, index) => {
-    if(word.selected) return
+    if (word.selected) return;
     words[index].selected = true;
     setWords([...words]);
     setListWord([...listWord, word.word]);
@@ -51,23 +78,23 @@ const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion, setQues
       setCountRequest(0);
       return;
     }
-    const answer = listWord.join(" ")
+    const answer = listWord.join(" ");
     try {
-      const result = await instance.post(`questions/${question._id}`, 
-        {answer} 
-      )
+      const result = await instance.post(`questions/${question._id}`, {
+        answer,
+      });
       if (result.data.data.correct) {
         setCountRequest(0);
-        setQuestionsCorrect(prev => prev + 1)
+        setQuestionsCorrect((prev) => prev + 1);
         setCorrect(true);
         return;
       } else {
-        setQuestionsCorrect(0)
+        setQuestionsCorrect(0);
         setCorrect(false);
         await instance.patch("users/update_asset", {
           hearts: Math.random(),
         });
-        setProfile(prevProfile => ({
+        setProfile((prevProfile) => ({
           ...prevProfile,
           hearts: prevProfile.hearts - 1,
         }));
@@ -84,26 +111,21 @@ const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion, setQues
             setCountRequest(0);
             return;
           }
-          await instance
-            .patch("summary_lesson/update_lesson", {
-              lessonId,
-              questionId: question._id,
-            })
-            .then(() => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            })
-            .catch((err) => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            });
+          await instance.patch("summary_lesson/update_lesson", {
+            lessonId,
+            questionId: question._id,
+          });
+          lessonsOfSummaryLesson[findIndexLesson].wrongQuestions.push(
+            question._id.toString(),
+          );
+          setLessonOfSummaryLesson([...lessonsOfSummaryLesson]);
+          setCountRequest(0);
+          return;
         }
         return;
       }
     } catch (error) {
-      setCountRequest(0)
+      setCountRequest(0);
     }
   };
   const handleNextNewQuestion = () => {
@@ -127,32 +149,29 @@ const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion, setQues
                 <img
                   src="/images/logo/speaker.png"
                   alt=""
-                  className="mr-2 h-10 w-10 md:mr-2 md:h-16 md:w-16 lazyload"
+                  className="lazyload mr-2 h-10 w-10 md:mr-2 md:h-16 md:w-16"
                 />
                 <p className="flex items-end font-noto md:text-xl">
                   : " {question?.document} "
                 </p>
               </div>
-              <div className="w-full flex px-4 items-center justify-center gap-1 h-[6rem] mt-3 rounded-xl border-2 border-[#e5e5e5]">
-                <div className="px-4 h-auto flex flex-wrap gap-2 border-b-[1px] border-[#9f8c8c] text-md lg:text-lg">
-                  {listWord && listWord?.map((word, index) => (
-                  <p key={index}>
-                    {word}
-                  </p>
-                  ))}
+              <div className="mt-3 flex h-[6rem] w-full items-center justify-center gap-1 rounded-xl border-2 border-[#e5e5e5] px-4">
+                <div className="text-md flex h-auto flex-wrap gap-2 border-b-[1px] border-[#9f8c8c] px-4 lg:text-lg">
+                  {listWord &&
+                    listWord?.map((word, index) => <p key={index}>{word}</p>)}
                 </div>
-                
               </div>
               <div className="mt-4 flex w-full items-center justify-center">
-                <ul className="flex w-full flex-wrap justify-evenly gap-1 lg:w-5/6 md:gap-2">
-                {words?.map((word, index) => (
-                    <li 
+                <ul className="flex w-full flex-wrap justify-evenly gap-1 md:gap-2 lg:w-5/6">
+                  {words?.map((word, index) => (
+                    <li
                       key={index}
                       onClick={() => handleSelectWord(word, index)}
-                      className="border-1 cursor-pointer rounded-lg border-[2px] h-[2.5rem] border-[#e5e5e5] px-6 lg:px-8 py-1 lowercase hover:bg-green-400 text-md lg:text-lg">
+                      className="border-1 text-md h-[2.5rem] cursor-pointer rounded-lg border-[2px] border-[#e5e5e5] px-6 py-1 lowercase hover:bg-green-400 lg:px-8 lg:text-lg"
+                    >
                       {word.selected === false && word.word ? word.word : " "}
                     </li>
-                   ))}
+                  ))}
                 </ul>
               </div>
             </div>
@@ -203,12 +222,16 @@ const QuestionTypeRearrange = ({ question, lessonId, handleNextQuestion, setQues
               {correct === true ? (
                 <div className="absolute left-2 top-[2.1rem] text-4xl font-bold text-green-600 md:left-2 md:text-6xl">
                   <p>Good!</p>
-                  <p className="text-sm md:text-xl">Cùng tới với câu tiếp theo nào!</p>
+                  <p className="text-sm md:text-xl">
+                    Cùng tới với câu tiếp theo nào!
+                  </p>
                 </div>
               ) : correct === false ? (
-                <div className="absolute left-2 top-[2.1rem]text-4xl font-bold text-red-600 md:left-2 md:text-6xl">
+                <div className="top-[2.1rem]text-4xl absolute left-2 font-bold text-red-600 md:left-2 md:text-6xl">
                   <p>Sai!</p>
-                  <p className="text-sm md:text-xl">Bạn làm sai rồi, làm lại nhé!</p>
+                  <p className="text-sm md:text-xl">
+                    Bạn làm sai rồi, làm lại nhé!
+                  </p>
                 </div>
               ) : (
                 ""

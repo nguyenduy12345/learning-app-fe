@@ -3,12 +3,14 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { UserInfo } from "../stores/user.store.jsx";
 import instance from "../utils/axiosRequest.js";
 
-const QuestionTypeFill = ({ question, lessonId, handleNextQuestion, setQuestionsCorrect }) => {
-  const {
-    setProfile,
-    lessonsOfSummaryLesson,
-    setFetchLessonsOfSummaryLesson,
-  } = useContext(UserInfo);
+const QuestionTypeFill = ({
+  question,
+  lessonId,
+  handleNextQuestion,
+  setQuestionsCorrect,
+}) => {
+  const { setProfile, lessonsOfSummaryLesson, setLessonOfSummaryLesson } =
+    useContext(UserInfo);
   const [document, setDocument] = useState(question?.document || "");
   const [words, setWords] = useState(question?.words || []);
   const [indexWord, setIndexWord] = useState(false);
@@ -16,8 +18,33 @@ const QuestionTypeFill = ({ question, lessonId, handleNextQuestion, setQuestions
   const [correct, setCorrect] = useState(undefined);
   const [message, setMessage] = useState("");
   const [countRequest, setCountRequest] = useState(0);
-
   const emtyDiv = useRef();
+
+  useEffect(() => {
+    const saveLessonToSumaryLesson = async () => {
+      try {
+        const indexLesson = lessonsOfSummaryLesson.findIndex(
+          (lesson) => lesson.lesson._id.toString() === lessonId,
+        );
+        if (indexLesson < 0) {
+          await instance.patch("summary_lesson/add_lesson", {
+            lessonId,
+          });
+          setLessonOfSummaryLesson((prev) => {
+            const updateSumaryLesson = [...prev];
+            updateSumaryLesson.push({ lesson: lessonId, wrongQuestions: [] });
+            return updateSumaryLesson;
+          });
+          return;
+        }
+        return;
+      } catch (error) {
+        return error;
+      }
+    };
+    saveLessonToSumaryLesson();
+  }, [lessonId]);
+
   const handleDragOverWord = (e) => {
     e.preventDefault();
   };
@@ -62,7 +89,6 @@ const QuestionTypeFill = ({ question, lessonId, handleNextQuestion, setQuestions
       return part;
     });
   };
-
   //Check correct if false will -1 heart user
   const handleCheckQuestion = async () => {
     if (countRequest === 1) return;
@@ -78,12 +104,12 @@ const QuestionTypeFill = ({ question, lessonId, handleNextQuestion, setQuestions
         answer: listWordDrop,
       });
       if (result.data.data.correct) {
-        setQuestionsCorrect(prev => prev + 1)
+        setQuestionsCorrect((prev) => prev + 1);
         setCorrect(true);
         setCountRequest(0);
         return;
       } else {
-        setQuestionsCorrect(0)
+        setQuestionsCorrect(0);
         setCorrect(false);
         await instance.patch("users/update_asset", {
           hearts: Math.random(),
@@ -105,21 +131,16 @@ const QuestionTypeFill = ({ question, lessonId, handleNextQuestion, setQuestions
             setCountRequest(0);
             return;
           }
-          await instance
-            .patch("summary_lesson/update_lesson", {
-              lessonId,
-              questionId: question._id,
-            })
-            .then(() => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            })
-            .catch((err) => {
-              setFetchLessonsOfSummaryLesson({ numb: Math.random() });
-              setCountRequest(0);
-              return;
-            });
+          await instance.patch("summary_lesson/update_lesson", {
+            lessonId,
+            questionId: question._id,
+          });
+          lessonsOfSummaryLesson[findIndexLesson].wrongQuestions.push(
+            question._id.toString(),
+          );
+          setLessonOfSummaryLesson([...lessonsOfSummaryLesson]);
+          setCountRequest(0);
+          return;
         }
         return;
       }
@@ -215,7 +236,7 @@ const QuestionTypeFill = ({ question, lessonId, handleNextQuestion, setQuestions
                 ) : (
                   <button
                     onClick={handleReplayQuestion}
-                    className="border-[#e5e5e5] flex transform items-center justify-center rounded-xl border-[3px] border-b-[5px] bg-white px-6 py-2 font-noto font-medium text-[#afafaf] transition-all duration-300 hover:scale-105 active:scale-95 md:px-10 md:py-3 md:text-xl md:font-bold"
+                    className="flex transform items-center justify-center rounded-xl border-[3px] border-b-[5px] border-[#e5e5e5] bg-white px-6 py-2 font-noto font-medium text-[#afafaf] transition-all duration-300 hover:scale-105 active:scale-95 md:px-10 md:py-3 md:text-xl md:font-bold"
                   >
                     Làm lại
                   </button>

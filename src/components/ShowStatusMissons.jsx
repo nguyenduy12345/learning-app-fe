@@ -9,7 +9,7 @@ const ShowStatusMissons = ({
       <div className="w-[95%]">
         <div className="flex w-full items-center justify-center">
           <div className="ml-2 w-[90%] md:w-[70%] rounded-xl bg-white p-4 font-noto">
-            <p className="text-center font-semibold uppercase text-xs md:text-md">
+            <p className="text-center font-semibold uppercase text-xs md:text-md lg:text-lg">
               Trạng thái hiện tại của các nhiệm vụ
             </p>
             {/* Danh sách nhiệm vụ */}
@@ -17,7 +17,7 @@ const ShowStatusMissons = ({
               {listMisson.map((misson, index) => (
                 <li
                   key={index}
-                  className={` w-full ${misson.completed ? "bg-[#87ed50] text-white" : ""} rounded-xl border-[1px] border-[#e5e5e5] p-4`}
+                  className={` w-full ${misson.completed ? "bg-green-100 text-black" : ""} rounded-xl border-[1px] border-[#e5e5e5] p-4`}
                 >
                   <div className="flex">
                     <ul className="flex-grow items-start">
@@ -43,15 +43,15 @@ const ShowStatusMissons = ({
                         className="lazyload h-9 w-9"
                       />
                       {misson.completed && (
-                        <p className="absolute right-[-6px] top-[0.3rem] flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full">
-                          <i className="fa-solid fa-check text-[3.5rem] font-bold text-white"></i>
+                        <p className="absolute right-[-6px] top-[1rem] md:top-[0.3rem] flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full">
+                          <i className="fa-solid fa-check text-[2.5rem] md:text-[3.5rem] font-bold text-black"></i>
                         </p>
                       )}
                     </div>
                   </div>
                   {misson.completed && (
                     <>
-                      <p className="text-center font-noto mt-3 text-white">
+                      <p className="text-center font-noto mt-3 text-black">
                         Bạn đã nhận được:{" "}
                       </p>
                       <ul className="mx-auto flex w-[90%] justify-around text-left text-xl font-bold sm:w-[60%]">

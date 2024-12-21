@@ -2,13 +2,16 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { useSearchParams, useNavigate, Outlet } from "react-router-dom";
 
 import { UserInfo } from "../stores/user.store.jsx";
+import { LoadingContext } from "../stores/loading.store.jsx";
+
 import MainLayout from "../layouts/MainLayout.jsx";
 import SideBar from "../components/SideBar.jsx";
-
 import instance from "../utils/axiosRequest.js";
+
 const Learning = () => {
-  const { courseOfLearningProcess, setFetchCourseOfLearningProcess } =
+  const { courseOfLearningProcess, setCourseOfLearningProcess} =
     useContext(UserInfo);
+  const {setIsLoading} = useContext(LoadingContext)
   const [sections, setSections] = useState([]);
   const [countRequest, setCountRequest] = useState(0);
   let [searchParams, setSearchParams] = useSearchParams();
@@ -18,21 +21,18 @@ const Learning = () => {
       ? courseOfLearningProcess[0]?.courseId._id
       : [];
   const navigate = useNavigate();
-  const colorDiv = useRef(null)
-  useEffect(() =>{
-    const getListCourse = async() =>{
-        await instance.get('/learning_process')
-        .then((res) => {
-          res?.data?.data?.courses?.length === 0 && navigate('/courses')
-        })
-        .catch(err => err)
-    }
-    getListCourse()
-  }, [courseOfLearningProcess])
   useEffect(() => {
     const fetchSections = async () => {
+      setIsLoading(true)
       await instance
-        .get(`sections?courseId=${courseId}`)
+        .get(`sections?courseId=${courseId}`,{
+          onDownloadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            if(+percentCompleted >= 100){
+              setIsLoading(false)
+            };
+          }
+        })
         .then((res) => setSections(res?.data?.data?.sections))
         .catch((err) => err);
     };
@@ -42,7 +42,7 @@ const Learning = () => {
     if (section.status === 2) return;
     if (countRequest === 1) return;
     setCountRequest(1);
-    const indexCourse = courseOfLearningProcess?.findIndex(
+    const indexCourse = courseOfLearningProcess.findIndex(
       (course) => course.courseId._id.toString() === courseId.toString(),
     );
     if (indexCourse < 0) {
@@ -69,7 +69,18 @@ const Learning = () => {
       navigate(
         `/learning/milestones?courseId=${courseId}&sectionId=${id}&index=${index}`,
       );
-      setFetchCourseOfLearningProcess("addSection" + id);
+      setCourseOfLearningProcess((prevCourse) => {
+        const updateCourses = [...prevCourse]
+        const courseIndex = updateCourses?.findIndex(course => courseId === course.courseId._id.toString())
+        updateCourses[courseIndex].sections.push({
+          sectionId: id,
+          totalMilestone: 0,
+          totalMilestoneDone: 0,
+          status: 1,
+          milestones: []
+        })
+        return updateCourses
+      })
       setCountRequest(0);
     } catch (error) {
       return error;

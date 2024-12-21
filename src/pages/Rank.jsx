@@ -1,14 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import MainLayout from "../layouts/MainLayout.jsx";
+
+import { LoadingContext } from "../stores/loading.store.jsx";
 
 import instance from "../utils/axiosRequest.js";
 
 const Rank = () => {
   const [users, setUsers] = useState([]);
+  const { setIsLoading } = useContext(LoadingContext)
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const result = await instance.get("/users");
+        setIsLoading(true)
+        const result = await instance.get("/users",{
+          onDownloadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            if(+percentCompleted >= 100){
+              setIsLoading(false)
+            };
+          }
+        });
         setUsers(result?.data?.data?.users || []);
       } catch (error) {
         return error;

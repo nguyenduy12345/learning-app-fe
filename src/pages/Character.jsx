@@ -7,11 +7,11 @@ import SideBar from "../components/SideBar.jsx";
 import CharacterCard from "../components/CharacterCard.jsx";
 
 import { UserInfo } from "../stores/user.store.jsx";
-
-import getUrlAudioFromArrays from "../functions/getUrlAudio.js";
+import { LoadingContext } from "../stores/loading.store.jsx";
 
 const Character = () => {
   const { courseOfLearningProcess } = useContext(UserInfo);
+  const {setIsLoading} = useContext(LoadingContext)
   const [dataAlphabet, setDataAlphabet] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
@@ -31,8 +31,16 @@ const Character = () => {
         const courseId =
           courseOfLearningProcess.length !== 0 &&
           courseOfLearningProcess[0].courseId._id;
+        setIsLoading(true)
         const result = await instance.get(
-          `glyphs_alphabet?courseId=${courseId}`,
+          `glyphs_alphabet?courseId=${courseId}`,{
+            onDownloadProgress: (progressEvent) => {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              if(+percentCompleted >= 100){
+                setIsLoading(false)
+              };
+            }
+          }
         );
         setDataAlphabet(result.data.data.glyphsAndAlphabet);
       } catch (error) {

@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 
 import { UserInfo } from "../stores/user.store.jsx";
+import { LoadingContext } from "../stores/loading.store.jsx";
 
 import MainLayout from "../layouts/MainLayout.jsx";
 import instance from "../utils/axiosRequest.js";
@@ -10,8 +11,9 @@ import CircleProgress from "../components/CircleProgress.jsx";
 import SideBar from "../components/SideBar.jsx";
 
 const Milestone = () => {
-  const { courseOfLearningProcess, setFetchCourseOfLearningProcess } =
+  const { courseOfLearningProcess, setCourseOfLearningProcess } =
     useContext(UserInfo);
+  const { setIsLoading } = useContext(LoadingContext)
   const [milestones, setMilestones] = useState([]);
   let [searchParams] = useSearchParams();
   const sectionId = searchParams.get("sectionId");
@@ -29,8 +31,16 @@ const Milestone = () => {
   //Get current section
   useEffect(() => {
     const getSection = async () => {
+      setIsLoading(true)
       await instance
-        .get(`sections?sectionId=${sectionId}`)
+        .get(`sections?sectionId=${sectionId}`,{
+          onDownloadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            if(+percentCompleted >= 100){
+              setIsLoading(false)
+            };
+          }
+        })
         .then((res) => {
           setCurrentSection(res.data.data.section);
         })
@@ -69,7 +79,7 @@ const Milestone = () => {
   }, [sectionId]);
   // update section
   useEffect(() => {
-    const fetchMilestone = async () => {
+    const updateTotalMilestone = async () => {
       try {
         if(milestones.length === 0) return
         await instance.patch(`learning_process/update_section`,{
@@ -77,16 +87,19 @@ const Milestone = () => {
           sectionId,
           totalMilestone: milestones?.length
         });
-        setFetchCourseOfLearningProcess({
-          type: 'update section',
-          numb: Math.random()
+        setCourseOfLearningProcess((prevCourse) => {
+          const updateCourses = [...prevCourse]
+          const courseIndex = updateCourses?.findIndex(course => courseId === course.courseId._id.toString())
+          const sectionIndex = updateCourses[courseIndex].sections.findIndex(section => section.sectionId === sectionId)
+          updateCourses[courseIndex].sections[sectionIndex].totalMilestone = milestones?.length
+          return updateCourses
         })
       } catch (error) {
         return error;
       }
     };
-    fetchMilestone();
-  }, [sectionId, milestones]);
+    updateTotalMilestone();
+  }, []);
   // format item
   milestones &&
     milestones.map((milestone) => {
@@ -190,7 +203,19 @@ const Milestone = () => {
           .get(`/lessons?sectionId=${sectionId}&milestoneId=${id}`)
           .then((res) => {
             setLessons(res?.data?.data?.lessons);
-            setFetchCourseOfLearningProcess("addMilestone" + id);
+            setCourseOfLearningProcess((prevCourse) => {
+              const updateCourses = [...prevCourse]
+              const courseIndex = updateCourses?.findIndex(course => courseId === course.courseId._id.toString())
+              const sectionIndex = updateCourses[courseIndex].sections.findIndex(section => section.sectionId === sectionId)
+              updateCourses[courseIndex].sections[sectionIndex].milestones.push({
+                milestoneId: item._id,
+                currentLesson: 1,
+                status: 1,
+                totalLesson: 0,
+                totalLessonDone: 0
+              })
+              return updateCourses
+            })
             milestones.map((item) => (item.show = false));
             milestones[indexMilestone].show = !milestones[indexMilestone].show;
             setCurrentLesson(1);
@@ -246,7 +271,19 @@ const Milestone = () => {
                 !milestones[indexMilestone].show;
               setMilestones([...milestones]);
               setCurrentLesson(1);
-              setFetchCourseOfLearningProcess("addMilestone" + id);
+              setCourseOfLearningProcess((prevCourse) => {
+                const updateCourses = [...prevCourse]
+                const courseIndex = updateCourses?.findIndex(course => courseId === course.courseId._id.toString())
+                const sectionIndex = updateCourses[courseIndex].sections.findIndex(section => section.sectionId === sectionId)
+                updateCourses[courseIndex].sections[sectionIndex].milestones.push({
+                  milestoneId: item._id,
+                  currentLesson: 1,
+                  status: 1,
+                  totalLesson: 0,
+                  totalLessonDone: 0
+                })
+                return updateCourses
+              })
               setCountRequest(0);
               return;
             })
@@ -302,7 +339,7 @@ const Milestone = () => {
                 <p className="hidden xl:block text-xl font-medium ml-2">Hướng dẫn</p>
               </div>
             </div>
-            <div className="absolute top-[4rem] pb-[10rem] mx-auto flex w-[98%] min-h-[100vh] flex-col gap-20 overflow-x-hidden scrollbar-none rounded-2xl md:top-[6rem] lg:gap-24">
+            <div className="absolute top-[4rem] pb-[10rem] mx-auto flex w-[98%] min-h-[100vh] flex-col gap-20 overflow-scroll scrollbar-none rounded-2xl md:top-[6rem] lg:gap-24">
               {milestones &&
                 milestones.map((item, index) => (
                   <ul
