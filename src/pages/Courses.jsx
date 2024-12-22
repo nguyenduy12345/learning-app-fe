@@ -31,7 +31,7 @@ const Courses = () => {
         .catch((err) => err);
     };
     getCourse();
-  }, []);
+  },[])
   const handleAddCourse = async (item, id) => {
     if (countRequest === 1) return;
     setCountRequest(1);

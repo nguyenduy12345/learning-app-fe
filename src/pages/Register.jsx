@@ -42,7 +42,7 @@ const Register = () => {
       })
       .then((result) => {
         Cookies.set("token", result?.data?.data?.accessToken, {expires: 30} )
-        result?.data ? window.location.href = "http://localhost:5173/learning " : ''
+        result?.data ? window.location.replace('/learning') : ''
       })      
     } catch (error) {
       setMessageRegister(error?.response?.data?.message)
@@ -61,13 +61,13 @@ const Register = () => {
               required: "Nhập tên tài khoản của bạn",
 
               validate: (value) => {
-                if(!value.match(/^[A-Za-z0-9]+$/)){
-                    return 'Vui lòng nhập họ và tên bạn'
+                if(!value.match(/^[A-Za-zÀ-ÿáàảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờở̃ỡợùúủũụưứừửữựỳýỷỹỵđĐ0-9]+(?: [A-Za-zÀ-ÿáàảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờở̃ỡợùúủũụưứừửữựỳýỷỹỵđĐ0-9]+)*$/)){
+                    return 'Tên không được phép có dấu cách đầu tiên và mỗi từ phải cách nhau bằng một dấu cách.'
                 }
                 return true
               },
               maxLength: {
-                value: 255,
+                value: 50,
                 message: "Trường tên quá dài, vui lòng nhập lại",
               },
             })}
@@ -184,7 +184,7 @@ const Register = () => {
           </Link>
             và 
           <Link to="" className="font-medium font-noto">
-            Chính sách bảo mật
+            Chính sách bảo mật 
           </Link>
            của chúng tôi.
         </p>

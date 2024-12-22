@@ -32,7 +32,7 @@ const Login = () => {
       await instance.post("login", data).then((result) => {
         setMessageLogin(result?.data?.message);
         Cookies.set("token", result?.data?.data?.accessToken, {expires: 30} )
-        result?.data ? window.location.href = "http://localhost:5173/learning" : ''
+        result?.data ? window.location.replace('/learning') : ''
       });
     } catch (error) {
       setMessageLogin(error?.response?.data?.message);
@@ -44,7 +44,7 @@ const Login = () => {
         accessToken: response.accessToken
       })
       Cookies.set("token", result?.data?.data?.accessToken, {expires: 30} )
-      result?.data ? window.location.href = "http://localhost:5173/learning" : ''
+      result?.data ? window.location.replace('/learning') : ''
     } catch (error) {
       setMessageLogin(error?.response?.data?.message)
     }
@@ -54,7 +54,7 @@ const Login = () => {
       const token = response?.credential
       const result = await instance.post('google_login',{token})
       Cookies.set("token", result?.data?.data?.accessToken, {expires: 30} )
-      result?.data ? window.location.href = "http://localhost:5173/learning" : ''
+      result?.data ? window.location.replace('/learning') : ''
     } catch (error) {
       setMessageLogin(error?.response?.data?.message)
     }

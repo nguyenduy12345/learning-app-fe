@@ -26,7 +26,13 @@ const ChangePassword = ({ setIsEditPassword }) => {
         setTimeout(() => setIsEditPassword(false), 3000)
     })
     .catch((err) => {
-        setMessage(err.response.data.message)
+      setMessage(() => {
+        if(err?.response?.data && Array.isArray(err.response.data)){
+          return err.response.data.map(item => item.message).join("\n")
+        }else{
+          return err.response.data.message
+        }
+      })
     })
   };
   return (
@@ -46,7 +52,7 @@ const ChangePassword = ({ setIsEditPassword }) => {
             {...register("password", {
               required: "Nhập mật khẩu của bạn",
               validate: (value) => {
-                if(!value.match(/^[A-Za-z0-9]+$/)){
+                if(!value.match(/^[A-Za-z0-9!@#$%^&*(),.?":{}|<>_-]+$/)){
                     return 'Vui lòng nhập mật khẩu của bạn'
                 }
                 return true
@@ -83,8 +89,8 @@ const ChangePassword = ({ setIsEditPassword }) => {
                 message: "Mật khẩu phải nhiều hơn 6 ký tự",
               },
               validate: (value) => {
-                if(!value.match(/^[A-Za-z0-9]+$/)){
-                    return 'Mật khẩu chỉ bao gồm ký tự số và chữ'
+                if(!value.match(/^[A-Za-z0-9!@#$%^&*(),.?":{}|<>_-]+$/)){
+                    return 'Mật khẩu chỉ bao gồm ký tự, chữ và số không bao gồm dấu cách!'
                 }
                 return true
               },

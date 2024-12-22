@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import { useSearchParams, useNavigate, Outlet } from "react-router-dom";
+import { useSearchParams, useNavigate, Outlet, useLocation } from "react-router-dom";
 
 import { UserInfo } from "../stores/user.store.jsx";
 import { LoadingContext } from "../stores/loading.store.jsx";
@@ -21,8 +21,11 @@ const Learning = () => {
       ? courseOfLearningProcess[0]?.courseId._id
       : [];
   const navigate = useNavigate();
+  const location = useLocation()
   useEffect(() => {
     const fetchSections = async () => {
+      if(!courseId) return
+      if(location.pathname === '/login') return
       setIsLoading(true)
       await instance
         .get(`sections?courseId=${courseId}`,{
@@ -34,7 +37,7 @@ const Learning = () => {
           }
         })
         .then((res) => setSections(res?.data?.data?.sections))
-        .catch((err) => err);
+        .catch((err) =>  err);
     };
     fetchSections();
   }, [courseId]);
