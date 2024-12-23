@@ -11,6 +11,9 @@ import QuestionTypeFill from "../components/QuestionTypeFill.jsx";
 import QuestionTypeRearrange from "../components/QuestionTypeRearrange.jsx";
 import Congratulation from "../components/Congratulation.jsx";
 import ShowStatusMissons from "../components/ShowStatusMissons.jsx";
+
+import formatDate from "../functions/formatDate.js";
+
 const Lesson = ({
   courseId,
   sectionId,
@@ -225,7 +228,6 @@ const Lesson = ({
                 
                 listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
                 break;
-              case "days":
               case "lessons":
                 await instance.patch(
                   `user_missons/update?missonId=${misson.misson.missonId._id}`,
@@ -240,6 +242,29 @@ const Lesson = ({
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
                     +updateMissons[misson.index].currentProgress + 1;
+                  updateMissons[misson.index].completed =
+                    +missons[misson.index].currentProgress >=
+                    +missons[misson.index].missonId.numberOfRequirements;
+                  return updateMissons;
+                });
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
+                break;
+                case "days":
+                  const currentDay = formatDate()
+                  const isHaveDay = profile.activeDays.inCludes(currentDay)
+                  await instance.patch(
+                  `user_missons/update?missonId=${misson.misson.missonId._id}`,
+                  {
+                    currentProgress: isHaveDay ? '0' : 1,
+                    status:
+                      +missons[misson.index].currentProgress + isHaveDay ? '0' : 1 >=
+                      +missons[misson.index].missonId.numberOfRequirements,
+                  },
+                );
+                setMissons((prevMissons) => {
+                  const updateMissons = [...prevMissons];
+                  updateMissons[misson.index].currentProgress =
+                    +updateMissons[misson.index].currentProgress + isHaveDay ? 0 : 1;
                   updateMissons[misson.index].completed =
                     +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;
@@ -362,7 +387,6 @@ const Lesson = ({
                 });
                 listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
                 break;
-              case "days":
               case "lessons":
                 await instance.patch(
                   `user_missons/update?missonId=${misson.misson.missonId._id}`,
@@ -383,6 +407,29 @@ const Lesson = ({
                   return updateMissons;
                 });
                 listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
+                break;
+                case "days":
+                  const currentDay = formatDate()
+                  const isHaveDay = profile.activeDays.inCludes(currentDay)
+                  await instance.patch(
+                  `user_missons/update?missonId=${misson.misson.missonId._id}`,
+                  {
+                    currentProgress: isHaveDay ? '0' : 1,
+                    status:
+                      +missons[misson.index].currentProgress + isHaveDay ? '0' : 1 >=
+                      +missons[misson.index].missonId.numberOfRequirements,
+                  },
+                );
+                setMissons((prevMissons) => {
+                  const updateMissons = [...prevMissons];
+                  updateMissons[misson.index].currentProgress =
+                    +updateMissons[misson.index].currentProgress + isHaveDay ? 0 : 1;
+                  updateMissons[misson.index].completed =
+                    +missons[misson.index].currentProgress >=
+                    +missons[misson.index].missonId.numberOfRequirements;
+                  return updateMissons;
+                });
+                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
                 break;
               default:
             }

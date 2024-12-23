@@ -66,7 +66,7 @@ const UserInfoProvide = ({ children }) => {
         }
       }
     }
-    const interval = setInterval(getUser, 10000)
+    const interval = setInterval(getUser, 60 * 1000)
     return () => clearInterval(interval)
   }, [location])
   return (
