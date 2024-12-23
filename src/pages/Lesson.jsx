@@ -28,6 +28,7 @@ const Lesson = ({
     setProfile,
     missons,
     setMissons,
+    courseOfLearningProcess,
     setCourseOfLearningProcess,
     lessonsOfSummaryLesson,
     setLessonOfSummaryLesson,
@@ -158,10 +159,23 @@ const Lesson = ({
             totalLessonDone: currentLesson,
             status: 2,
           });
+          const indexCourse = courseOfLearningProcess.findIndex(
+            (course) => course.courseId._id.toString() === courseId.toString(),
+          );
+          const indexSection = courseOfLearningProcess[
+            indexCourse
+          ].sections.findIndex(
+            (section) => section.sectionId.toString() === sectionId.toString(),
+          )
           await instance.patch(`learning_process/update_section`, {
             courseId,
             sectionId,
             totalMilestoneDone: indexLesson,
+            status: courseOfLearningProcess[
+              indexCourse
+            ].sections[indexSection].totalMilestoneDone + 1 >= courseOfLearningProcess[
+              indexCourse
+            ].sections[indexSection].totalMilestone ? 2 : ''
           });
           await instance.patch("users/update_asset", {
             experiences: +lessons[indexLesson - 1].experiences,
@@ -298,6 +312,13 @@ const Lesson = ({
             ].sections[indexSection].totalMilestoneDone = +updateCourse[
               indexCourse
             ].sections[indexSection].totalMilestoneDone + 1
+            updateCourse[
+              indexCourse
+            ].sections[indexSection].status = updateCourse[
+              indexCourse
+            ].sections[indexSection].totalMilestoneDone >= updateCourse[
+              indexCourse
+            ].sections[indexSection].totalMilestone ? 2 : 1
             const indexMilestone = updateCourse[indexCourse].sections[
               indexSection
             ].milestones.findIndex(

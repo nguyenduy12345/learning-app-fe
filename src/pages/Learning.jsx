@@ -127,9 +127,10 @@ const Learning = () => {
                       className={`mt-2 flex h-[6rem] w-full flex-col justify-between bg-white px-5 py-3 md:px-6 md:py-2 2xl:mt-0 2xl:h-[90%] 2xl:w-[58%] 2xl:rounded-bl-3xl 2xl:rounded-tl-3xl 2xl:p-[2rem] ${section?.status === 1 || section?.status === 2 ? "2xl:bg-[#ddf4ff]" : "2xl:bg-[#f7f7f7]"} z-10 rounded-bl-3xl rounded-br-3xl`}
                     >
                       <div className="">
-                        <p className="font-noto text-xl font-medium text-[#5f5f5f] lg:text-3xl">
+                        <span className="font-noto text-xl font-medium text-[#5f5f5f] lg:text-3xl">
                           {`Phần ${index + 1}`}
-                        </p>
+                        </span>
+                        <span className="font-noto text-md font-medium text-[#5f5f5f] lg:text-xl">{section.status === 2 ? '- Hoàn thành' : ''}</span>
                         {section?.status === 1 || section?.status === 2 ? (
                           <div className="flex mt-1 2xl:mt-5 mx-auto w-[100%] items-center justify-center font-noto">
                             <div className="relative h-4 w-full rounded-xl bg-[#f3d2d2] 2xl:bg-[#f9f9f9]">

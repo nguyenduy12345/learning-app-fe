@@ -9,6 +9,7 @@ import instance from "../utils/axiosRequest.js";
 import Lesson from "../pages/Lesson.jsx";
 import CircleProgress from "../components/CircleProgress.jsx";
 import SideBar from "../components/SideBar.jsx";
+import { CheckBadgeIcon } from "@heroicons/react/20/solid";
 
 const Milestone = () => {
   const { courseOfLearningProcess, setCourseOfLearningProcess } =
@@ -99,7 +100,7 @@ const Milestone = () => {
       }
     };
     updateTotalMilestone();
-  }, [sectionId]);
+  }, [sectionId, milestones.length]);
   // format item
   milestones &&
     milestones.map((milestone) => {
@@ -339,7 +340,7 @@ const Milestone = () => {
                 <p className="hidden xl:block text-xl font-medium ml-2">Hướng dẫn</p>
               </div>
             </div>
-            <div className="absolute top-[4rem] pb-[10rem] mx-auto flex w-[98%] min-h-[100vh] flex-col gap-20 overflow-scroll scrollbar-none rounded-2xl md:top-[6rem] lg:gap-24">
+            <div className="absolute top-[4rem] pb-[10rem] flex w-[98%] min-h-[100vh] flex-col gap-20 overflow-scroll scrollbar-none rounded-2xl md:top-[6rem] lg:gap-24">
               {milestones &&
                 milestones.map((item, index) => (
                   <ul

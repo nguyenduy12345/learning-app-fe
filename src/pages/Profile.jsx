@@ -47,7 +47,7 @@ import ChangeProfile from "../components/ChangeProfile.jsx";
         setStatusChangeAvatar('Lưu ảnh')
         setAvatar(false)
         setMessage(res.data.message)
-        setTimeout(() => setMessage(''), 3000)
+        setTimeout(() => setMessage(''), 1000)
         setCountRequest(0)
         setIsEditing(false)
       })
