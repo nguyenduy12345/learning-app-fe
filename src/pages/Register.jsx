@@ -45,7 +45,14 @@ const Register = () => {
         result?.data ? window.location.replace('/learning') : ''
       })      
     } catch (error) {
-      setMessageRegister(error?.response?.data?.message)
+      setMessageRegister(() => {
+        if(error.response.data && Array.isArray(error.response.data)){
+          return error.response.data.map(item => item.message).join('\n')
+        }else{
+          return error.response.data.message
+        }
+      })
+      setTimeout(() => setMessageRegister(''), 2000)
     }
   };
   return (

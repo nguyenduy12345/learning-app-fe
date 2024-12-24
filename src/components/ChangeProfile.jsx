@@ -27,6 +27,10 @@ const ChangeProfile = ({ setIsEditProfile }) => {
       setMessage('Không nhập tên dài quá 30 ký tự')
       return
     }
+    if(!fullName.match(/^[A-Za-zÀ-ÿáàảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờở̃ỡợùúủũụưứừửữựỳýỷỹỵđĐ0-9]+(?: [A-Za-zÀ-ÿáàảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờở̃ỡợùúủũụưứừửữựỳýỷỹỵđĐ0-9]+)*$/)){
+      setMessage('Tên không được phép có dấu cách đầu tiên và mỗi từ phải cách nhau bằng một dấu cách.')
+      return 
+    }
     if(isSending) return
     setIsSending(true)
     await instance.patch("users/update_information",{
@@ -34,7 +38,7 @@ const ChangeProfile = ({ setIsEditProfile }) => {
       sex
     })
     .then((res) => {
-      setMessage(res?.data?.message)
+      setMessage(res.data.message)
       setIsSending(false)
       setProfile(prev => {
         return {
@@ -47,7 +51,13 @@ const ChangeProfile = ({ setIsEditProfile }) => {
     })
     .catch((err) => {
       setIsSending(false)
-      setMessage(err?.response?.message)
+      setMessage(() => {
+        if(err.response.data && Array.isArray(err.response.data)){
+          return err.response.data.map(item => item.message).join('\n')
+        }else{
+          return err.response.data.message
+        }
+      })
     })
   };
   const convertNumb = (numb) => {

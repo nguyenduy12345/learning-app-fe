@@ -23,7 +23,7 @@ const ChangePassword = ({ setIsEditPassword }) => {
     })
     .then((res) => {
         setMessage(res?.data?.message)
-        setTimeout(() => setIsEditPassword(false), 3000)
+        setTimeout(() => setIsEditPassword(false), 1500)
     })
     .catch((err) => {
       setMessage(() => {
