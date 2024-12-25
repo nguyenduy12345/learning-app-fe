@@ -57,7 +57,7 @@ const ShowStatusMissons = ({
   }, [listMisson]);
   return (
     isShowInfoMisson &&
-    listMisson.length !== 0 && (
+    listMisson.length !== 0 ? (
       <div className="fixed z-30 mx-auto my-auto flex h-screen w-full items-center justify-center bg-[#e8e8e8]">
         <div className="w-[95%]">
           <div className="flex w-full items-center justify-center">
@@ -143,7 +143,7 @@ const ShowStatusMissons = ({
           </div>
         </div>
       </div>
-    )
+    ) : ''
   );
 };
 

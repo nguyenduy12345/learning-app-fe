@@ -34,7 +34,7 @@ const SideBar = () => {
             Xem thêm
           </Link>
         </div>
-        <ul className="text-md mt-2 flex md:max-h-[9rem] lg:max-h-[14rem] flex-col gap-3 overflow-hidden rounded-2xl">
+        <ul className="text-md mt-2 flex md:max-h-[9rem] lg:max-h-[12rem] flex-col gap-3 overflow-hidden rounded-2xl">
           {missons.length !== 0 &&
             missons.map((misson, index) => (
               misson.completed === false && (

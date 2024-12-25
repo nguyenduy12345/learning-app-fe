@@ -34,7 +34,7 @@ const Lesson = ({
     setLessonOfSummaryLesson,
   } = useContext(UserInfo);
   const { setIsLoading } = useContext(LoadingContext);
-  const [indexQuestion, setIndexQuestion] = useState(0);
+  const [indexQuestion, setIndexQuestion] = useState(9);
   const [indexLesson, setIndexLesson] = useState(currentLesson || 1);
   const [questions, setQuestions] = useState(
     lessons[indexLesson - 1] && lessons[indexLesson - 1]?.questions,
@@ -89,7 +89,7 @@ const Lesson = ({
     .filter((item) => item !== undefined);
 
   // create variable save listMisson send to components ShowStatusMissons
-  let listMissonWhenUpdated = [...listMisson]
+  let listMissonWhenUpdated = [...listMisson];
   useEffect(() => {
     // check and save status misson type questions
     listMissonUpdate?.map(async (misson) => {
@@ -127,18 +127,22 @@ const Lesson = ({
             return updateProfile;
           });
           setListMisson((prev) => {
-            let updateMisson = [...prev]
-            const findMisson = updateMisson?.findIndex(miss => miss.missonId._id.toString() === misson.misson.milestoneId._id.toString())
-            if(findMisson > -1){
-              return updateMisson
-            }else{
-              return updateMisson = [...prev, misson.misson]
+            let updateMisson = [...prev];
+            const findMisson = updateMisson?.findIndex(
+              (miss) =>
+                miss.missonId._id.toString() ===
+                misson.misson.milestoneId._id.toString(),
+            );
+            if (findMisson > -1) {
+              return updateMisson;
+            } else {
+              return (updateMisson = [...prev, misson.misson]);
             }
-          })
-          setIsShowInfoMisson(true)
+          });
+          setIsShowInfoMisson(true);
         } catch (error) {}
       }
-      return
+      return;
     });
   }, [questionsCorrect]);
   // Next question and handle end lesson
@@ -166,16 +170,19 @@ const Lesson = ({
             indexCourse
           ].sections.findIndex(
             (section) => section.sectionId.toString() === sectionId.toString(),
-          )
+          );
           await instance.patch(`learning_process/update_section`, {
             courseId,
             sectionId,
             totalMilestoneDone: indexLesson,
-            status: courseOfLearningProcess[
-              indexCourse
-            ].sections[indexSection].totalMilestoneDone + 1 >= courseOfLearningProcess[
-              indexCourse
-            ].sections[indexSection].totalMilestone ? 2 : ''
+            status:
+              courseOfLearningProcess[indexCourse].sections[indexSection]
+                .totalMilestoneDone +
+                1 >=
+              courseOfLearningProcess[indexCourse].sections[indexSection]
+                .totalMilestone
+                ? 2
+                : "",
           });
           await instance.patch("users/update_asset", {
             experiences: +lessons[indexLesson - 1].experiences,
@@ -193,7 +200,7 @@ const Lesson = ({
             updateProfile.hearts = +updateProfile.hearts + 5;
             return updateProfile;
           });
-          const updateMissonPromises = listMissonUpdate.map(async(misson) => {
+          const updateMissonPromises = listMissonUpdate.map(async (misson) => {
             switch (misson?.misson?.missonId?.type) {
               case "gems":
                 await instance.patch(
@@ -216,7 +223,10 @@ const Lesson = ({
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
               case "experiences":
                 await instance.patch(
@@ -239,8 +249,11 @@ const Lesson = ({
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
+
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
               case "lessons":
                 await instance.patch(
@@ -261,30 +274,40 @@ const Lesson = ({
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
-                case "days":
-                  const currentDay = formatDate()
-                  const isHaveDay = profile.activeDays.inCludes(currentDay)
-                  await instance.patch(
+              case "days":
+                const currentDay = formatDate();
+                const isHaveDay = profile.activeDays.includes(currentDay);
+                await instance.patch(
                   `user_missons/update?missonId=${misson.misson.missonId._id}`,
                   {
-                    currentProgress: isHaveDay ? '0' : 1,
+                    currentProgress: isHaveDay ? "0" : 1,
                     status:
-                      +missons[misson.index].currentProgress + isHaveDay ? '0' : 1 >=
-                      +missons[misson.index].missonId.numberOfRequirements,
+                      +missons[misson.index].currentProgress + isHaveDay
+                        ? "0"
+                        : 1 >=
+                          +missons[misson.index].missonId.numberOfRequirements,
                   },
                 );
                 setMissons((prevMissons) => {
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
-                    +updateMissons[misson.index].currentProgress + isHaveDay ? 0 : 1;
+                    +updateMissons[misson.index].currentProgress + isHaveDay
+                      ? 0
+                      : 1;
                   updateMissons[misson.index].completed =
                     +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
               default:
             }
@@ -292,46 +315,49 @@ const Lesson = ({
           await Promise.all(updateMissonPromises);
           setIsLoading(false);
           setListMisson((prevListMisson) => {
-            const updateListMisson = [...prevListMisson, ...listMissonWhenUpdated]
-            return updateListMisson
-          })
+            const updateListMisson = [
+              ...prevListMisson,
+              ...listMissonWhenUpdated,
+            ];
+            return updateListMisson;
+          });
           setIsCongratulation(true);
           setIsShowInfoMisson(true);
           setCourseOfLearningProcess((prevCourse) => {
-            const updateCourse = [...prevCourse]
+            const updateCourse = [...prevCourse];
             const indexCourse = updateCourse.findIndex(
-              (course) => course.courseId._id.toString() === courseId.toString(),
+              (course) =>
+                course.courseId._id.toString() === courseId.toString(),
             );
-            const indexSection = updateCourse[
-              indexCourse
-            ].sections.findIndex(
-              (section) => section.sectionId.toString() === sectionId.toString(),
+            const indexSection = updateCourse[indexCourse].sections.findIndex(
+              (section) =>
+                section.sectionId.toString() === sectionId.toString(),
             );
-            updateCourse[
-              indexCourse
-            ].sections[indexSection].totalMilestoneDone = +updateCourse[
-              indexCourse
-            ].sections[indexSection].totalMilestoneDone + 1
-            updateCourse[
-              indexCourse
-            ].sections[indexSection].status = updateCourse[
-              indexCourse
-            ].sections[indexSection].totalMilestoneDone >= updateCourse[
-              indexCourse
-            ].sections[indexSection].totalMilestone ? 2 : 1
+            updateCourse[indexCourse].sections[
+              indexSection
+            ].totalMilestoneDone =
+              +updateCourse[indexCourse].sections[indexSection]
+                .totalMilestoneDone + 1;
+            updateCourse[indexCourse].sections[indexSection].status =
+              updateCourse[indexCourse].sections[indexSection]
+                .totalMilestoneDone >=
+              updateCourse[indexCourse].sections[indexSection].totalMilestone
+                ? 2
+                : 1;
             const indexMilestone = updateCourse[indexCourse].sections[
               indexSection
             ].milestones.findIndex(
-              (milestone) => milestone.milestoneId.toString() === milestoneId.toString(),
+              (milestone) =>
+                milestone.milestoneId.toString() === milestoneId.toString(),
             );
-            updateCourse[indexCourse].sections[
-              indexSection
-            ].milestones[indexMilestone].currentLesson = indexLesson + 1
-            updateCourse[indexCourse].sections[
-              indexSection
-            ].milestones[indexMilestone].status = 2
-            return updateCourse
-          })
+            updateCourse[indexCourse].sections[indexSection].milestones[
+              indexMilestone
+            ].currentLesson = indexLesson + 1;
+            updateCourse[indexCourse].sections[indexSection].milestones[
+              indexMilestone
+            ].status = 2;
+            return updateCourse;
+          });
           setCountRequest(0);
           return;
         } else {
@@ -383,7 +409,10 @@ const Lesson = ({
                     +misson.misson.missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
               case "experiences":
                 await instance.patch(
@@ -406,7 +435,10 @@ const Lesson = ({
                     +misson.misson.missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
               case "lessons":
                 await instance.patch(
@@ -427,63 +459,78 @@ const Lesson = ({
                     +misson.misson.missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson]
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
-                case "days":
-                  const currentDay = formatDate()
-                  const isHaveDay = profile.activeDays.inCludes(currentDay)
-                  await instance.patch(
+              case "days":
+                const currentDay = formatDate();
+                const isHaveDay = profile.activeDays.includes(currentDay);
+                await instance.patch(
                   `user_missons/update?missonId=${misson.misson.missonId._id}`,
                   {
-                    currentProgress: isHaveDay ? '0' : 1,
+                    currentProgress: isHaveDay ? "0" : 1,
                     status:
-                      +missons[misson.index].currentProgress + isHaveDay ? '0' : 1 >=
-                      +missons[misson.index].missonId.numberOfRequirements,
+                      +missons[misson.index].currentProgress + isHaveDay
+                        ? "0"
+                        : 1 >=
+                          +missons[misson.index].missonId.numberOfRequirements,
                   },
                 );
                 setMissons((prevMissons) => {
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
-                    +updateMissons[misson.index].currentProgress + isHaveDay ? 0 : 1;
+                    +updateMissons[misson.index].currentProgress + isHaveDay
+                      ? 0
+                      : 1;
                   updateMissons[misson.index].completed =
                     +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;
                   return updateMissons;
                 });
-                listMissonWhenUpdated = [...listMissonWhenUpdated, misson.misson];
+                listMissonWhenUpdated = [
+                  ...listMissonWhenUpdated,
+                  misson.misson,
+                ];
                 break;
               default:
+                break;
             }
           });
           await Promise.all(updateMissonPromises);
           setIsLoading(false);
           setListMisson((prevListMisson) => {
-            const updateListMisson = [...prevListMisson, ...listMissonWhenUpdated]
-            return updateListMisson
-          })
+            const updateListMisson = [
+              ...prevListMisson,
+              ...listMissonWhenUpdated,
+            ];
+            return updateListMisson;
+          });
           setIsCongratulation(true);
           setIsShowInfoMisson(true);
           setCurrentLesson(indexLesson + 1);
           setCourseOfLearningProcess((prevCourse) => {
-            const updateCourse = [...prevCourse]
+            const updateCourse = [...prevCourse];
             const indexCourse = updateCourse.findIndex(
-              (course) => course.courseId._id.toString() === courseId.toString(),
+              (course) =>
+                course.courseId._id.toString() === courseId.toString(),
             );
-            const indexSection = updateCourse[
-              indexCourse
-            ].sections.findIndex(
-              (section) => section.sectionId.toString() === sectionId.toString(),
+            const indexSection = updateCourse[indexCourse].sections.findIndex(
+              (section) =>
+                section.sectionId.toString() === sectionId.toString(),
             );
             const indexMilestone = updateCourse[indexCourse].sections[
               indexSection
             ].milestones.findIndex(
-              (milestone) => milestone.milestoneId.toString() === milestoneId.toString(),
+              (milestone) =>
+                milestone.milestoneId.toString() === milestoneId.toString(),
             );
-            updateCourse[indexCourse].sections[
-              indexSection
-            ].milestones[indexMilestone].currentLesson = indexLesson + 1
-            return updateCourse
-          })
+            updateCourse[indexCourse].sections[indexSection].milestones[
+              indexMilestone
+            ].currentLesson = indexLesson + 1;
+            return updateCourse;
+          });
           setCountRequest(0);
         }
       } catch (error) {
