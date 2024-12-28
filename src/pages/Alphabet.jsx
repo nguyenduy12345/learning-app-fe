@@ -27,17 +27,12 @@ const Alphabet = () => {
           courseOfLearningProcess[0].courseId._id;
         setIsLoading(true)
         const result = await instance.get(
-          `glyphs_alphabet?courseId=${courseId}`,{
-            onDownloadProgress: (progressEvent) => {
-              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-              if(+percentCompleted >= 100){
-                setIsLoading(false)
-              };
-            }
-          }
+          `glyphs_alphabet?courseId=${courseId}`
         );
         setDataAlphabet(result.data.data.glyphsAndAlphabet);
+        setIsLoading(false)
       } catch (error) {
+        setIsLoading(false)
         return error;
       }
     };

@@ -19,16 +19,14 @@ const Courses = () => {
     const getCourse = async () => {
       setIsLoading(true)
       await instance
-        .get("courses",{
-          onDownloadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            if(+percentCompleted >= 100){
-              setIsLoading(false)
-            };
-          }
+        .get("courses")
+        .then((res) => {
+          setListCourse(res?.data?.data?.courses || [])
+          setIsLoading(false)
         })
-        .then((res) => setListCourse(res?.data?.data?.courses || []))
-        .catch((err) => err);
+        .catch((err) => {
+          setIsLoading(false)
+        });
     };
     getCourse();
   },[])

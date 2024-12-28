@@ -34,18 +34,14 @@ const Milestone = () => {
     const getSection = async () => {
       setIsLoading(true)
       await instance
-        .get(`sections?sectionId=${sectionId}`,{
-          onDownloadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            if(+percentCompleted >= 100){
-              setIsLoading(false)
-            };
-          }
-        })
+        .get(`sections?sectionId=${sectionId}`)
         .then((res) => {
           setCurrentSection(res.data.data.section);
+          setIsLoading(false)
         })
-        .catch((err) => err);
+        .catch((err) => {
+          setIsLoading(false)
+        });
     };
     getSection();
   }, [sectionId]);

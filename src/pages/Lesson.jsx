@@ -58,20 +58,11 @@ const Lesson = ({
       try {
         setIsLoading(true);
         const result = await instance.get(
-          `lessons/${lessons[indexLesson - 1]._id}`,
-          {
-            onDownloadProgress: (progressEvent) => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total,
-              );
-              if (+percentCompleted >= 100) {
-                setIsLoading(false);
-              }
-            },
-          },
-        );
+          `lessons/${lessons[indexLesson - 1]._id}`);
         setQuestions(result?.data?.data?.lesson?.questions);
+        setIsLoading(false)
       } catch (error) {
+        setIsLoading(false)
         return error;
       }
     };
@@ -296,9 +287,9 @@ const Lesson = ({
                 setMissons((prevMissons) => {
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
-                    +updateMissons[misson.index].currentProgress + isHaveDay
+                    +updateMissons[misson.index].currentProgress + (isHaveDay
                       ? 0
-                      : 1;
+                      : 1)
                   updateMissons[misson.index].completed =
                     +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;
@@ -481,9 +472,9 @@ const Lesson = ({
                 setMissons((prevMissons) => {
                   const updateMissons = [...prevMissons];
                   updateMissons[misson.index].currentProgress =
-                    +updateMissons[misson.index].currentProgress + isHaveDay
+                    +updateMissons[misson.index].currentProgress + (isHaveDay
                       ? 0
-                      : 1;
+                      : 1)
                   updateMissons[misson.index].completed =
                     +missons[misson.index].currentProgress >=
                     +missons[misson.index].missonId.numberOfRequirements;

@@ -12,16 +12,11 @@ const Rank = () => {
     const getUsers = async () => {
       try {
         setIsLoading(true)
-        const result = await instance.get("/users",{
-          onDownloadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            if(+percentCompleted >= 100){
-              setIsLoading(false)
-            };
-          }
-        });
+        const result = await instance.get("/users");
         setUsers(result?.data?.data?.users || []);
+        setIsLoading(false)
       } catch (error) {
+        setIsLoading(false)
         return error;
       }
     };

@@ -26,18 +26,15 @@ const Learning = () => {
     const fetchSections = async () => {
       if(!courseId) return
       if(location.pathname === '/login') return
-      setIsLoading(true)
       await instance
-        .get(`sections?courseId=${courseId}`,{
-          onDownloadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            if(+percentCompleted >= 100){
-              setIsLoading(false)
-            };
-          }
+        .get(`sections?courseId=${courseId}`)
+        .then((res) => {
+          setSections(res?.data?.data?.sections)
+          setIsLoading(false)
         })
-        .then((res) => setSections(res?.data?.data?.sections))
-        .catch((err) =>  err);
+        .catch((err) => {
+          setIsLoading(false)
+        });
     };
     fetchSections();
   }, [courseId]);
