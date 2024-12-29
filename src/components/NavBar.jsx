@@ -7,7 +7,7 @@ const NavBar = () => {
   const [smallNav, setSmallNav] = useState(false);
   const handleUserLogOut = () => {
     Cookies.remove("token")
-    window.location.href = "http://localhost:5173/login";
+    window.location.replace("/login")
   };
   return (
     <>
