@@ -1,4 +1,4 @@
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import FacebookLogin from '@greatsumini/react-facebook-login';
 
 const LoginFacebook = ({handleLoginWithFacebook}) => {
   const responseFacebook = (response) => {
@@ -9,7 +9,9 @@ const LoginFacebook = ({handleLoginWithFacebook}) => {
     <FacebookLogin
     appId={APP_ID}
     autoLoad
-    callback={responseFacebook}
+    onSuccess={(response) => {
+      responseFacebook(response);
+    }}
     fields="name,email,picture"
     scope="public_profile, email"
     render={renderProps => (
