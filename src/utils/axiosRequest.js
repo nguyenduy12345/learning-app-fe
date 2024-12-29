@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie"
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/api/v1/',
-    headers: {'Accept-Language': 'vi-vn'}
+    baseURL: 'https://duylingo-app-be.cd95dznd.xyz/api/v1/',
+    headers: { 'Accept-Language': 'vi-vn' }
 });
 
 const token = Cookies.get("token")
@@ -31,7 +31,7 @@ instance.defaults.headers.common["Authorization"] = "Bearer " + token;
 //             return instance(error.response.config);
 //           })
 //           .catch(() => {
-           
+
 //           });
 //       }
 //     );
