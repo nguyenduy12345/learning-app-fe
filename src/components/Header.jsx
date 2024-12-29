@@ -53,7 +53,6 @@ const Header = () => {
         setCountRequest(0);
       })
       .catch((err) => {
-        console.log(err)
         setCountRequest(0);
       });
   };
