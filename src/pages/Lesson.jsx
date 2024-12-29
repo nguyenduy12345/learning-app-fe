@@ -34,7 +34,7 @@ const Lesson = ({
     setLessonOfSummaryLesson,
   } = useContext(UserInfo);
   const { setIsLoading } = useContext(LoadingContext);
-  const [indexQuestion, setIndexQuestion] = useState(9);
+  const [indexQuestion, setIndexQuestion] = useState(0);
   const [indexLesson, setIndexLesson] = useState(currentLesson || 1);
   const [questions, setQuestions] = useState(
     lessons[indexLesson - 1] && lessons[indexLesson - 1]?.questions,
