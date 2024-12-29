@@ -9,7 +9,7 @@ import instance from "../utils/axiosRequest.js";
 export const UserInfo = createContext({});
 
 const UserInfoProvide = ({ children }) => {
-  const { setIsLoading} = useContext(LoadingContext)
+  const { setIsLoading } = useContext(LoadingContext)
   const [profile, setProfile] = useState()
   const [courseOfLearningProcess, setCourseOfLearningProcess] = useState([])
   const [missons, setMissons] = useState([])
@@ -20,30 +20,24 @@ const UserInfoProvide = ({ children }) => {
   useEffect(() => {
     const getAllData = async () => {
       try {
-        setIsLoading(true)
         const [userResponse, courseResponse, lessonResponse, missionResponse] = await Promise.all([
           instance.get('users/profile'),
           instance.get('learning_process'),
           instance.get('summary_lesson'),
-          instance.get('user_missons', {
-            onDownloadProgress: (progressEvent) => {
-              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              if (+percentCompleted >= 100) {
-                setIsLoading(false);
-              }
-            },
-          })
+          instance.get('user_missons')
         ])
         setProfile(userResponse.data.data.user)
         setCourseOfLearningProcess(courseResponse.data.data.courses);
         setLessonOfSummaryLesson(lessonResponse.data.data.summaryLesson.lessons);
         setMissons(missionResponse.data.data.missons);
+        setIsLoading(false)
         if (courseResponse.data.data.courses.length === 0) {
           navigate('/courses');
         } else {
           navigate('/learning');
         }
       } catch (err) {
+        setIsLoading(false)
         if(err.response && err.response.data.message){
           navigate('/login')
         }
