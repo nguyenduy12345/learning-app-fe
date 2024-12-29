@@ -18,7 +18,7 @@ const CharacterCard = ({ character, example, audioUrl, handleListenAudio }) => {
         ref={audioRef}
         className="absolute left-32 top-[5rem]"
         controls
-        preload="auto"
+        preload="none"
         hidden
       >
         <source src={audioUrl} type="audio/mp3" />

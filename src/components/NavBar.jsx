@@ -12,8 +12,8 @@ const NavBar = () => {
   return (
     <>
       <ul className="fixed bottom-0 z-20 flex h-[3.8rem] w-full justify-evenly border-t-2 border-[#e5e5e5] bg-[#f3f8f9] py-[3px] text-[#777777] md:fixed md:top-0 md:left-0 md:h-screen md:w-auto md:flex-col md:justify-start md:gap-2 md:border-r-[3px] md:border-t-0 md:border-r-[#eeeeee] md:bg-white md:pt-[4rem] lg:w-[17rem] lg:pt-[1rem] lg:px-6">
-        <a
-          href="http://localhost:5173"
+        <Link
+          to="/"
           title="Trang chủ"
           className="hidden items-center justify-center md:flex"
         >
@@ -21,7 +21,7 @@ const NavBar = () => {
           <h2 className="hidden cursor-pointer justify-center py-2 font-noto text-3xl font-bold text-red-400 lg:flex">
             Duylingo
           </h2>
-        </a>
+        </Link>
         <NavLink
           title="Học tập"
           className={({ isActive }) =>
