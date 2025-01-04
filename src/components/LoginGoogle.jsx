@@ -1,5 +1,4 @@
-import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
-import instance from "../utils/axiosRequest.js";
+import { GoogleLogin } from "@react-oauth/google";
 const LoginGoogle = ({ handleLoginWithGoogle }) => {
   const handleLoginSuccess = (response) => {
     handleLoginWithGoogle(response);

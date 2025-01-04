@@ -49,7 +49,7 @@ const Register = () => {
         if(error.response.data && Array.isArray(error.response.data)){
           return error.response.data.map(item => item.message).join('\n')
         }else{
-          return error.response.data.message
+          return error?.response?.data?.message
         }
       })
       setTimeout(() => setMessageRegister(''), 2000)
