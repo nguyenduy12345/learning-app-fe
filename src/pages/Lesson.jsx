@@ -278,9 +278,10 @@ const Lesson = ({
                   {
                     currentProgress: isHaveDay ? "0" : 1,
                     status:
-                      +missons[misson.index].currentProgress + isHaveDay
+                      +missons[misson.index].currentProgress + (isHaveDay
                         ? "0"
-                        : 1 >=
+                        : 1
+                      ) >=
                           +missons[misson.index].missonId.numberOfRequirements,
                   },
                 );
@@ -463,9 +464,9 @@ const Lesson = ({
                   {
                     currentProgress: isHaveDay ? "0" : 1,
                     status:
-                      +missons[misson.index].currentProgress + isHaveDay
+                      +missons[misson.index].currentProgress + (isHaveDay
                         ? "0"
-                        : 1 >=
+                        : 1) >=
                           +missons[misson.index].missonId.numberOfRequirements,
                   },
                 );
