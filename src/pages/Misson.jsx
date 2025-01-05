@@ -72,7 +72,7 @@ const Misson = () => {
                             }}
                             className={`absolute top-[1.3px] h-[1.3rem] rounded-xl bg-[#58cc02] transition ease-linear`}
                           ></div>
-                          <p className="absolute left-[40%] top-0 font-noto font-semibold text-white">
+                          <p className="absolute left-1/2 -translate-x-1/2 top-0 font-noto font-semibold text-white">
                             {misson.currentProgress} /{" "}
                             {misson.missonId.numberOfRequirements}
                           </p>

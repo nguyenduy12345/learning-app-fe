@@ -50,7 +50,7 @@ const SideBar = () => {
                       }}
                       className={`absolute top-[1.3px] h-[1.3rem] rounded-xl bg-[#58cc02] transition ease-linear`}
                     ></div>
-                    <p className="text-md absolute left-[40%] top-0 font-bold tracking-wider text-[#ffffff]">
+                    <p className="text-md absolute left-1/2 -translate-x-1/2 top-0 font-bold tracking-wider text-[#ffffff]">
                       {misson.currentProgress} /{" "}
                       {misson.missonId.numberOfRequirements}
                     </p>
