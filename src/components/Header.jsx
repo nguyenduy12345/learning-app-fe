@@ -62,7 +62,7 @@ const Header = () => {
         <li className="flex items-center justify-center">
           <Listbox value={selected || []} onChange={setSelected}>
             <div className="relative">
-              <ListboxButton className="relative w-[7rem] cursor-default rounded-md bg-white p-1 text-left text-[12px] text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-[10rem]">
+              <ListboxButton className="relative w-auto cursor-default rounded-md bg-white p-1 text-left text-[12px] text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-[10rem]">
                 <span className="flex items-center">
                   {selected ? (
                     <>
@@ -71,12 +71,12 @@ const Header = () => {
                         src={selected?.image}
                         className="lazyload h-6 w-6 shrink-0 rounded-full sm:h-7 sm:w-7"
                       />
-                      <span className="ml-2">
+                      <span className="ml-2 hidden sm:block">
                         {selected?.name ? "Tiếng " + selected?.name : ""}
                       </span>
                     </>
                   ) : (
-                    <Link to="/courses" className="ml-1 text-">
+                    <Link to="/courses" className="ml-1 mr-6">
                       Chọn khóa học
                     </Link>
                   )}
