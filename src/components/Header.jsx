@@ -61,8 +61,8 @@ const Header = () => {
       <ul className="flex w-full flex-wrap justify-evenly gap-2 text-end md:w-[80%] md:justify-evenly">
         <li className="flex items-center justify-center">
           <Listbox value={selected || []} onChange={setSelected}>
-            <div className="relative mt-2">
-              <ListboxButton className="relative w-auto cursor-default rounded-md bg-white p-1 text-left text-[12px] text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-[10rem]">
+            <div className="relative">
+              <ListboxButton className="relative w-[7rem] cursor-default rounded-md bg-white p-1 text-left text-[12px] text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-[10rem]">
                 <span className="flex items-center">
                   {selected ? (
                     <>
@@ -76,7 +76,7 @@ const Header = () => {
                       </span>
                     </>
                   ) : (
-                    <Link to="/courses" className="ml-1 text-sm">
+                    <Link to="/courses" className="ml-1 text-">
                       Chọn khóa học
                     </Link>
                   )}
