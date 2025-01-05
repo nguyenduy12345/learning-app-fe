@@ -147,7 +147,7 @@ const NavBar = () => {
             {profile?.avatar ? (
               <img
                 src={profile?.avatar}
-                className="w-12 lg:w-10 rounded-[50%] border-[1px] border-blue-400 object-cover lazyload"
+                className="w-12 h-12 lg:w-10 lg:h-10 rounded-[50%] border-[1px] border-blue-400 object-cover lazyload"
               />
             ) : (
               <img src="/images/logo/person-default.png" className="w-10 lazyload" />
