@@ -71,7 +71,7 @@ const Header = () => {
                         src={selected?.image}
                         className="lazyload h-6 w-6 shrink-0 rounded-full sm:h-7 sm:w-7"
                       />
-                      <span className="ml-2 hidden sm:block">
+                      <span className="ml-2">
                         {selected?.name ? "Tiếng " + selected?.name : ""}
                       </span>
                     </>
