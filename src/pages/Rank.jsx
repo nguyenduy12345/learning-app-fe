@@ -42,7 +42,7 @@ const Rank = () => {
               <img
                 src={sortUser[2]?.avatar || "/images/logo/profile.jfif"} // Thay hình ảnh hoạt hình minh họa tại đây
                 alt="Game Character"
-                className="lazyload rounded-full shadow-lg"
+                className="lazyload rounded-full shadow-lg object-cover h-[2.5rem] w-[2.5rem] md:h-[4.5rem] md:w-[4.5rem]"
               />
               <div className="absolute left-0 top-0 rounded-br-full bg-[#d3a67b] px-4 text-sm font-semibold text-white md:px-6 md:text-lg">
                 3
@@ -52,17 +52,17 @@ const Rank = () => {
               <img
                 src={sortUser[0]?.avatar || "/images/logo/profile.jfif"} // Thay hình ảnh hoạt hình minh họa tại đây
                 alt="Game Character"
-                className="lazyload rounded-full shadow-lg"
+                className="lazyload rounded-full shadow-lg object-cover h-[4rem] w-[4rem] md:h-[6rem] md:w-[6rem]"
               />
               <div className="absolute left-0 top-0 rounded-br-full bg-[#feea66] px-4 text-sm font-semibold text-white md:px-6 md:text-lg">
                 1
               </div>
             </div>
-            <div className="relative h-[3rem] w-[3rem] md:h-[5rem] md:w-[5rem]">
+            <div className="relative h-[3rem] w-[3rem] md:h-[5rem] md:w-[5rem] ">
               <img
                 src={sortUser[1]?.avatar || "/images/logo/profile.jfif"} // Thay hình ảnh hoạt hình minh họa tại đây
                 alt="Game Character"
-                className="lazyload rounded-full shadow-lg"
+                className="lazyload rounded-full shadow-lg object-cover h-[3rem] w-[3rem] md:h-[5rem] md:w-[5rem]"
               />
               <div className="absolute left-0 top-0 rounded-br-full bg-[#d6e4ef] px-4 text-sm font-semibold text-white md:px-6 md:text-lg">
                 2
