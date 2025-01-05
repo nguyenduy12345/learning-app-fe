@@ -105,7 +105,7 @@ const Learning = () => {
       <MainLayout>
         <div className="mt-[5rem]">
           <Outlet />
-          <ul className="flex w-full flex-grow flex-col gap-[1.5rem] px-[1rem] md:absolute md:left-[5.5rem] md:mt-4 md:w-[51vw] lg:left-[17rem] lg:w-[42vw] lg:px-[3rem] xl:w-[50vw] 2xl:w-[52vw] 2xl:px-[5rem]">
+          <ul className="flex w-full flex-grow flex-col gap-[1.5rem] px-[1rem] pb-[5rem] md:pb-0 md:absolute md:left-[5.5rem] md:mt-4 md:w-[51vw] lg:left-[17rem] lg:w-[42vw] lg:px-[3rem] xl:w-[50vw] 2xl:w-[52vw] 2xl:px-[5rem]">
             {sections &&
               sections.map((section, index) => (
                 <li

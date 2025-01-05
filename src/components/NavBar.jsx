@@ -127,7 +127,7 @@ const NavBar = () => {
           <li className="flex h-[2.5rem] cursor-pointer items-center px-[2px] md:mb-1 md:h-[3.5rem] md:rounded-lg md:px-3 md:py-1 md:hover:bg-[#ddf4ff] lg:w-full">
             <img
               src="/images/logo/rank-nav.svg"
-              className="w-8 md:w-10 lazyload"
+              className="w-12 md:w-12 lg:w-10 lazyload"
             />
             <p className="ml-5 hidden font-noto text-lg font-medium lg:block">
               Xếp hạng

@@ -76,7 +76,7 @@ const Header = () => {
                       </span>
                     </>
                   ) : (
-                    <Link to="/courses" className="ml-1">
+                    <Link to="/courses" className="ml-1 text-sm">
                       Chọn khóa học
                     </Link>
                   )}

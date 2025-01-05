@@ -5,7 +5,6 @@ import { UserInfo } from "../stores/user.store.jsx";
 
 import MainLayout from "../layouts/MainLayout.jsx";
 import SideBar from "../components/SideBar.jsx";
-import Loading from "../components/Loading.jsx";
 
 const Misson = () => {
   const { profile, missons } = useContext(UserInfo);
@@ -28,9 +27,8 @@ const Misson = () => {
     "Hoàn thành các nhiệm vụ để nhận rương kho báu. Đảm bảo sẽ có nhiều phần quà hấp dẫn dành cho bạn mỗi ngày!";
   return (
     <MainLayout>
-      <Loading />
       <div className="relative">
-        <div className="absolute mx-auto mt-[6rem] pb-[5rem] flex w-[95%] flex-col gap-[1.5rem] bg-white font-noto md:left-[5.5rem] md:w-[51vw] lg:left-[17rem] lg:w-[42vw] lg:flex-grow lg:flex-row xl:w-[50vw] 2xl:w-[52vw]">
+        <div className="absolute mx-auto mt-[6rem] pb-[5rem] md:pb-0 flex w-[100%] flex-col gap-[1.5rem] bg-white font-noto md:left-[5.5rem] md:w-[51vw] lg:left-[17rem] lg:w-[42vw] lg:flex-grow lg:flex-row xl:w-[50vw] 2xl:w-[52vw]">
           <div className="w-full bg-white">
             <div
               className={`mx-auto flex w-[96%] flex-col rounded-2xl bg-[#ddf4ff] p-8 pb-0`}

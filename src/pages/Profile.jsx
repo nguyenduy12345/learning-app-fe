@@ -61,7 +61,7 @@ const Profile = () => {
   return (
     <MainLayout>
       {!!profile && (
-        <div className="absolute mt-[5rem] w-full rounded-lg bg-white pb-[5rem] shadow-lg md:left-[5.5rem] md:w-[75vw] lg:left-[17rem] lg:w-[69vw]">
+        <div className="absolute mt-[5rem] w-full rounded-lg bg-white pb-[3rem] md:pb-2 shadow-lg md:left-[5.5rem] md:w-[75vw] lg:left-[17rem] lg:w-[69vw]">
           <div className="relative flex w-full justify-center">
             <img
               src={

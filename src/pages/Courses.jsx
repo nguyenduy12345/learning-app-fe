@@ -90,11 +90,11 @@ const Courses = () => {
 
   return (
     <MainLayout>
-      <div className="mt-[5rem] p-[0.8rem] md:absolute md:left-[5.5rem] lg:left-[17rem]">
+      <div className="mt-[5rem] p-[0.8rem] pb-[5rem] md:pb-0 md:absolute md:left-[5.5rem] lg:left-[17rem]">
         <p className="mb-4 font-noto text-xl font-medium md:mb-9">
           Hãy lựa chọn các khóa học bạn cần:{" "}
         </p>
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
           {listCourse &&
             listCourse.map((item, index) => (
               <li

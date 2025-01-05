@@ -574,7 +574,7 @@ const Lesson = ({
         isShowInfoMisson={isShowInfoMisson}
         setIsShowInfoMisson={setIsShowInfoMisson}
       />
-      <div className="relative h-screen w-full py-6">
+      <div className="relative w-full py-6">
         <ul className="mx-auto flex w-[90%] items-center justify-center md:w-[75%]">
           <li>
             <i

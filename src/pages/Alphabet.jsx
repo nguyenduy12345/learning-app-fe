@@ -45,7 +45,7 @@ const Alphabet = () => {
   
   return (
     <MainLayout>
-      <div className="static mt-[5rem] md:absolute md:left-[5.5rem] md:w-[49vw] lg:left-[17rem] lg:w-[39vw] xl:w-[49vw]">
+      <div className="static mt-[5rem] pb-[5rem] md:pb-0 md:absolute md:left-[5.5rem] md:w-[49vw] lg:left-[17rem] lg:w-[39vw] xl:w-[49vw]">
         <div className="flex flex-col items-center justify-center bg-white px-6 py-2 text-center">
           <h1 className="mb-3 text-xl font-semibold text-gray-800 lg:text-2xl">
             Hãy cùng học các âm tiếng Anh!

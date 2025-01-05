@@ -28,7 +28,7 @@ const Rank = () => {
   });
   return (
     <MainLayout>
-      <div className="mx-auto mt-[5rem] flex w-full flex-col rounded-lg bg-white py-6 pt-0 font-noto shadow-lg sm:w-[80vw] md:absolute md:left-[8rem] md:top-[5rem] md:mt-0 lg:left-[20rem] lg:w-[65vw] xl:left-[25rem]">
+      <div className="mx-auto mt-[5rem] flex w-full flex-col rounded-lg bg-white py-6 pt-0 font-noto shadow-lg pb-[5rem] md:pb-0 sm:w-[80vw] md:absolute md:left-[8rem] md:top-[5rem] md:mt-0 lg:left-[20rem] lg:w-[65vw] xl:left-[25rem]">
         <div className="flex flex-col items-center py-[1.3rem] border-b-[2px] border-b-[#afacac]">
           <h1 className="mb-2 text-center text-xl font-bold text-green-600">
             Xếp Hạng Người Chơi Theo Kinh Nghiệm
