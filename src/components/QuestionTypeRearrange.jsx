@@ -203,7 +203,7 @@ const QuestionTypeRearrange = ({
                   </p>
                 </div>
               ) : correct === false ? (
-                <div className="top-[2.1rem]text-4xl absolute left-2 font-bold text-red-600 md:left-2 md:text-6xl">
+                <div className="top-[2.1rem] text-4xl absolute left-2 font-bold text-red-600 md:left-2 md:text-6xl">
                   <p>Sai!</p>
                   <p className="text-sm md:text-xl">
                     Bạn làm sai rồi, làm lại nhé!
